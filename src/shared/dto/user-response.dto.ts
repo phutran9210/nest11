@@ -13,7 +13,7 @@ export class UserResponseDto {
   @Exclude()
   password: string;
 
-  @Expose()
+  @Exclude()
   isActive: boolean;
 
   @Exclude()
