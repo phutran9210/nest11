@@ -45,41 +45,6 @@ export default tseslint.config(
       '@typescript-eslint/no-empty-function': 'error',
       '@typescript-eslint/no-useless-constructor': 'error',
       '@typescript-eslint/parameter-properties': 'error',
-
-      // Naming Convention Rules
-      '@typescript-eslint/naming-convention': [
-        'error',
-        {
-          selector: 'class',
-          format: ['PascalCase'],
-          suffix: [
-            'Controller',
-            'Service',
-            'Module',
-            'Guard',
-            'Interceptor',
-            'Filter',
-            'Pipe',
-            'Dto',
-            'Entity',
-          ],
-        },
-        {
-          selector: 'interface',
-          format: ['PascalCase'],
-          prefix: ['I'],
-        },
-        {
-          selector: 'enum',
-          format: ['PascalCase'],
-        },
-        {
-          selector: 'method',
-          modifiers: ['private'],
-          format: ['camelCase'],
-          leadingUnderscore: 'require',
-        },
-      ],
     },
   },
 );

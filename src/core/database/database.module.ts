@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
 import { getDatabaseConfig } from '~core/config/database.config';
+import { DatabaseHealthService, DatabaseHealthController } from './health';
 
 @Module({
   imports: [
@@ -10,6 +11,8 @@ import { getDatabaseConfig } from '~core/config/database.config';
       useFactory: (configService: ConfigService) => getDatabaseConfig(configService),
     }),
   ],
-  exports: [TypeOrmModule],
+  controllers: [DatabaseHealthController],
+  providers: [DatabaseHealthService],
+  exports: [TypeOrmModule, DatabaseHealthService],
 })
 export class DatabaseModule {}

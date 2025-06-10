@@ -19,12 +19,26 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:unit": "jest --selectProjects unit",
+    "test:unit:watch": "jest --selectProjects unit --watch",
+    "test:unit:cov": "jest --selectProjects unit --coverage",
+    "test:e2e": "jest --selectProjects integration",
+    "test:e2e:watch": "jest --selectProjects integration --watch",
+    "typeorm": "typeorm-ts-node-commonjs",
+    "migration:generate": "npm run typeorm -- migration:generate -d data-source.ts",
+    "migration:run": "npm run typeorm -- migration:run -d data-source.ts",
+    "migration:revert": "npm run typeorm -- migration:revert -d data-source.ts",
+    "migration:create": "npm run typeorm -- migration:create",
+    "db:seed": "ts-node src/core/database/seeds/seed.ts",
+    "db:drop": "npm run typeorm -- schema:drop -d data-source.ts",
+    "db:setup": "npm run migration:run && npm run db:seed"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.0.1",
+    "@nestjs/jwt": "^11.0.0",
+    "@nestjs/passport": "^11.0.5",
     "@nestjs/platform-express": "^11.0.1",
     "@nestjs/swagger": "^11.2.0",
     "@nestjs/throttler": "^6.4.0",
@@ -34,12 +48,18 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
     "dayjs": "^1.11.13",
+    "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "lodash": "^4.17.21",
+    "nest-winston": "^1.10.2",
+    "passport": "^0.7.0",
+    "passport-jwt": "^4.0.1",
     "pg": "^8.16.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
     "typeorm": "^0.3.24",
+    "winston": "^3.17.0",
+    "winston-daily-rotate-file": "^5.0.0",
     "zod": "^3.25.56"
   },
   "devDependencies": {
@@ -53,8 +73,10 @@
     "@types/express": "^5.0.0",
     "@types/jest": "^29.5.14",
     "@types/node": "^22.10.7",
+    "@types/passport-jwt": "^4.0.1",
     "@types/pg": "^8.15.4",
     "@types/supertest": "^6.0.2",
+    "@types/winston": "^2.4.4",
     "eslint": "^9.18.0",
     "eslint-config-prettier": "^10.0.1",
     "eslint-plugin-prettier": "^5.2.2",
@@ -70,27 +92,10 @@
     "typescript": "^5.7.3",
     "typescript-eslint": "^8.20.0"
   },
-  "jest": {
-    "moduleFileExtensions": [
-      "js",
-      "json",
-      "ts"
-    ],
-    "lint-staged": {
-      "*.ts": [
-        "eslint --fix",
-        "prettier --write"
-      ]
-    },
-    "rootDir": "src",
-    "testRegex": ".*\\.spec\\.ts$",
-    "transform": {
-      "^.+\\.(t|j)s$": "ts-jest"
-    },
-    "collectCoverageFrom": [
-      "**/*.(t|j)s"
-    ],
-    "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+  "lint-staged": {
+    "*.ts": [
+      "eslint --fix",
+      "prettier --write"
+    ]
   }
 }

@@ -1,34 +1,20 @@
 import {
-  IsBoolean,
-  IsOptional,
-  IsEmail,
-  IsString,
-  MinLength,
-  IsStrongPassword,
-} from 'class-validator';
+  ApiOptionalEmailField,
+  ApiOptionalNameField,
+  ApiOptionalPasswordField,
+  ApiOptionalBooleanField,
+} from '~/core/decorators';
 
 export class UpdateUserDto {
-  @IsEmail()
-  @IsOptional()
+  @ApiOptionalEmailField()
   email?: string;
 
-  @IsString()
-  @IsOptional()
+  @ApiOptionalNameField()
   name?: string;
 
-  @IsString()
-  @IsOptional()
-  @MinLength(8)
-  @IsStrongPassword({
-    minLength: 8,
-    minLowercase: 1,
-    minUppercase: 1,
-    minNumbers: 1,
-    minSymbols: 1,
-  })
+  @ApiOptionalPasswordField()
   password?: string;
 
-  @IsBoolean()
-  @IsOptional()
+  @ApiOptionalBooleanField({ description: 'User active status' })
   isActive?: boolean;
 }

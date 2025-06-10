@@ -1,23 +1,12 @@
-import { IsEmail, IsNotEmpty, IsString, MinLength, IsStrongPassword } from 'class-validator';
+import { ApiEmailField, ApiNameField, ApiPasswordField } from '~/core/decorators';
 
 export class CreateUserDto {
-  @IsEmail()
-  @IsNotEmpty()
+  @ApiEmailField()
   email: string;
 
-  @IsString()
-  @IsNotEmpty()
+  @ApiNameField()
   name: string;
 
-  @IsString()
-  @IsNotEmpty()
-  @MinLength(8)
-  @IsStrongPassword({
-    minLength: 8,
-    minLowercase: 1,
-    minUppercase: 1,
-    minNumbers: 1,
-    minSymbols: 1,
-  })
+  @ApiPasswordField()
   password: string;
 }

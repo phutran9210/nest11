@@ -1,19 +1,82 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
 
+export interface IDatabaseConfig {
+  type: 'postgres';
+  host: string;
+  port: number;
+  username: string;
+  password: string;
+  database: string;
+  synchronize: boolean;
+  logging: boolean | 'all' | Array<'query' | 'error' | 'schema' | 'warn' | 'info' | 'log'>;
+  ssl: boolean | { rejectUnauthorized: boolean };
+  entities: string[];
+  migrations: string[];
+  migrationsRun: boolean;
+  dropSchema: boolean;
+  maxQueryExecutionTime: number;
+  extra: {
+    max: number;
+    min: number;
+    acquire: number;
+    idle: number;
+  };
+}
+
 export const getDatabaseConfig = (configService: ConfigService): TypeOrmModuleOptions => {
   const nodeEnv = configService.get<string>('NODE_ENV', 'development');
+  const isProduction = nodeEnv === 'production';
+  const isTest = nodeEnv === 'test';
 
-  return {
+  const config: IDatabaseConfig = {
     type: 'postgres',
-    host: configService.get<string>('D' + 'B_HOST', 'localhost'),
+    host: configService.get<string>('DB_HOST', 'localhost'),
     port: configService.get<number>('DB_PORT', 5432),
     username: configService.get<string>('DB_USERNAME', 'postgres'),
     password: configService.get<string>('DB_PASSWORD', 'password'),
-    database: configService.get<string>('DB_NAME', 'mydb'),
-    entities: ['dist/**/*.entity{.ts,.js}'],
-    // synchronize: nodeEnv !== 'production',
-    logging: nodeEnv === 'development',
-    ssl: nodeEnv === 'production' ? { rejectUnauthorized: false } : false,
+    database: configService.get<string>('DB_NAME', isTest ? 'test_db' : 'mydb'),
+
+    // Schema management
+    synchronize: configService.get<boolean>('DB_SYNCHRONIZE', !isProduction),
+    migrationsRun: configService.get<boolean>('DB_MIGRATIONS_RUN', isProduction),
+    dropSchema: configService.get<boolean>('DB_DROP_SCHEMA', isTest),
+
+    // Entities and migrations
+    entities: [configService.get<string>('DB_ENTITIES_PATH', 'dist/**/*.entity{.ts,.js}')],
+    migrations: [configService.get<string>('DB_MIGRATIONS_PATH', 'dist/migrations/*{.ts,.js}')],
+
+    // Logging
+    logging: configService.get<boolean>('DB_LOGGING', !isProduction)
+      ? ['error', 'warn', 'schema', 'log']
+      : false,
+
+    // SSL Configuration
+    ssl: isProduction
+      ? { rejectUnauthorized: configService.get<boolean>('DB_SSL_REJECT_UNAUTHORIZED', false) }
+      : false,
+
+    // Performance settings
+    maxQueryExecutionTime: configService.get<number>('DB_MAX_QUERY_EXECUTION_TIME', 10000),
+
+    // Connection pool settings
+    extra: {
+      max: configService.get<number>('DB_POOL_MAX', 20),
+      min: configService.get<number>('DB_POOL_MIN', 2),
+      acquire: configService.get<number>('DB_POOL_ACQUIRE', 60000),
+      idle: configService.get<number>('DB_POOL_IDLE', 10000),
+    },
   };
+
+  // Validate required environment variables in production
+  if (isProduction) {
+    const requiredVars = ['DB_HOST', 'DB_PORT', 'DB_USERNAME', 'DB_PASSWORD', 'DB_NAME'];
+    const missingVars = requiredVars.filter((varName) => !configService.get(varName));
+
+    if (missingVars.length > 0) {
+      throw new Error(`Missing required database environment variables: ${missingVars.join(', ')}`);
+    }
+  }
+
+  return config;
 };
