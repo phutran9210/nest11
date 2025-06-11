@@ -1,12 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ClassSerializerInterceptor } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { UserController } from '../../../../src/modules/user/user.controller';
-import { UserService } from '../../../../src/modules/user/user.service';
-import { CreateUserDto } from '../../../../src/shared/dto/create-user.dto';
-import { UpdateUserDto } from '../../../../src/shared/dto/update-user.dto';
-import { UserResponseDto } from '../../../../src/shared/dto/user-response.dto';
-import { UserEntity } from '../../../../src/shared/entities/user.entity';
+import { UserController } from '~modules/user/user.controller';
+import { UserService } from '~modules/user/user.service';
+import { CreateUserDto } from '~shared/dto/create-user.dto';
+import { UpdateUserDto } from '~shared/dto/update-user.dto';
+import { UserResponseDto } from '~shared/dto/user-response.dto';
+import { UserEntity } from '~shared/entities/user.entity';
 import { plainToInstance } from 'class-transformer';
 
 // Mock class-transformer

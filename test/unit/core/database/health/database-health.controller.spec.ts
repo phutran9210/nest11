@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { DatabaseHealthController } from '../../../../../src/core/database/health/database-health.controller';
-import { DatabaseHealthService, IDatabaseHealthStatus } from '../../../../../src/core/database/health/database-health.service';
+import { DatabaseHealthController } from '~core/database/health';
+import { DatabaseHealthService, IDatabaseHealthStatus } from '~core/database/health';
 
 describe('DatabaseHealthController', () => {
   let controller: DatabaseHealthController;
@@ -156,7 +156,7 @@ describe('DatabaseHealthController', () => {
       const results = await Promise.all(promises);
 
       expect(service.checkHealth).toHaveBeenCalledTimes(3);
-      results.forEach(result => {
+      results.forEach((result) => {
         expect(result).toEqual(mockHealthyStatus);
       });
     });

@@ -61,16 +61,13 @@ describe('LoggingInterceptor', () => {
 
       interceptor.intercept(mockExecutionContext, mockCallHandler).subscribe();
 
-      expect(mockLogger.info).toHaveBeenCalledWith(
-        'Incoming request: GET /api/test',
-        {
-          method: 'GET',
-          url: '/api/test',
-          userAgent: 'test-agent',
-          ip: '127.0.0.1',
-          timestamp: expect.any(String),
-        },
-      );
+      expect(mockLogger.info).toHaveBeenCalledWith('Incoming request: GET /api/test', {
+        method: 'GET',
+        url: '/api/test',
+        userAgent: 'test-agent',
+        ip: '127.0.0.1',
+        timestamp: expect.any(String),
+      });
     });
 
     it('should log successful response', () => {
@@ -110,15 +107,11 @@ describe('LoggingInterceptor', () => {
 
       interceptor.intercept(mockExecutionContext, mockCallHandler).subscribe();
 
-      expect(mockLogger.debug).toHaveBeenCalledWith(
-        'Response data for GET /api/test',
-        'HTTP',
-        {
-          statusCode: 200,
-          responseData,
-          duration: 100,
-        },
-      );
+      expect(mockLogger.debug).toHaveBeenCalledWith('Response data for GET /api/test', 'HTTP', {
+        statusCode: 200,
+        responseData,
+        duration: 100,
+      });
 
       process.env.LOG_LEVEL = originalEnv;
     });
@@ -143,16 +136,13 @@ describe('LoggingInterceptor', () => {
 
       interceptor.intercept(mockExecutionContext, mockCallHandler).subscribe();
 
-      expect(mockLogger.info).toHaveBeenCalledWith(
-        'Incoming request: GET /api/test',
-        {
-          method: 'GET',
-          url: '/api/test',
-          userAgent: '',
-          ip: '127.0.0.1',
-          timestamp: expect.any(String),
-        },
-      );
+      expect(mockLogger.info).toHaveBeenCalledWith('Incoming request: GET /api/test', {
+        method: 'GET',
+        url: '/api/test',
+        userAgent: '',
+        ip: '127.0.0.1',
+        timestamp: expect.any(String),
+      });
     });
 
     it('should log error response', () => {
@@ -251,7 +241,7 @@ describe('LoggingInterceptor', () => {
 
     it('should handle non-Error objects', () => {
       const error = 'String error';
-      
+
       // Reset response statusCode to ensure proper fallback
       mockResponse.statusCode = 200; // Default response status
 

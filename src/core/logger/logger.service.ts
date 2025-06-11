@@ -1,12 +1,50 @@
-import { Injectable, LoggerService } from '@nestjs/common';
+import { Injectable, LoggerService, OnModuleDestroy } from '@nestjs/common';
 import * as winston from 'winston';
 
 @Injectable()
-export class CustomLoggerService implements LoggerService {
+export class CustomLoggerService implements LoggerService, OnModuleDestroy {
   private readonly logger: winston.Logger;
+  private isClosing = false;
 
   constructor(logger: winston.Logger) {
     this.logger = logger;
+  }
+
+  async onModuleDestroy() {
+    if (this.isClosing) return; // Prevent duplicate close calls
+    this.isClosing = true;
+
+    try {
+      console.log('🔄 Closing Winston logger...');
+
+      // Close all transports gracefully with timeout
+      await Promise.race([
+        new Promise<void>((resolve) => {
+          this.logger.end(() => {
+            console.log('✅ Winston logger closed gracefully');
+            resolve();
+          });
+        }),
+        new Promise<void>((_, reject) =>
+          setTimeout(() => reject(new Error('Logger close timeout')), 3000),
+        ),
+      ]);
+    } catch (error) {
+      console.error('❌ Error closing Winston logger:', error);
+
+      // Force close logger if graceful close fails
+      try {
+        this.logger.destroy();
+        console.log('🔌 Winston logger force closed');
+      } catch (forceError) {
+        console.error('❌ Error force closing logger:', forceError);
+      }
+    }
+  }
+
+  beforeApplicationShutdown(signal?: string) {
+    // Don't log to winston during shutdown to prevent "write after end" errors
+    console.log(`⏹️ Logger service received shutdown signal: ${signal || 'unknown'}`);
   }
 
   log(message: string, context?: string, ...optionalParams: unknown[]): void {

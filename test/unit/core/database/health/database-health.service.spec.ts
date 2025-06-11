@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { DataSource } from 'typeorm';
-import { DatabaseHealthService, IDatabaseHealthStatus } from '../../../../../src/core/database/health/database-health.service';
+import { DatabaseHealthService, IDatabaseHealthStatus } from '~core/database/health';
 
 describe('DatabaseHealthService', () => {
   let service: DatabaseHealthService;
@@ -46,9 +46,7 @@ describe('DatabaseHealthService', () => {
 
   describe('checkHealth', () => {
     beforeEach(() => {
-      jest.spyOn(Date, 'now')
-        .mockReturnValueOnce(1000)
-        .mockReturnValueOnce(1050);
+      jest.spyOn(Date, 'now').mockReturnValueOnce(1000).mockReturnValueOnce(1050);
     });
 
     it('should return healthy status when database is connected', async () => {
@@ -93,7 +91,7 @@ describe('DatabaseHealthService', () => {
         ...mockDataSource,
         isInitialized: false,
       };
-      
+
       const module: TestingModule = await Test.createTestingModule({
         providers: [
           DatabaseHealthService,
@@ -115,10 +113,8 @@ describe('DatabaseHealthService', () => {
     });
 
     it('should measure response time correctly', async () => {
-      jest.spyOn(Date, 'now')
-        .mockReturnValueOnce(2000)
-        .mockReturnValueOnce(2100);
-      
+      jest.spyOn(Date, 'now').mockReturnValueOnce(2000).mockReturnValueOnce(2100);
+
       mockDataSource.query.mockResolvedValue([{ result: 1 }]);
 
       const result = await service.checkHealth();

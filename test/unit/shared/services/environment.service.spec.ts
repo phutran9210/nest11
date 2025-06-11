@@ -266,7 +266,7 @@ describe('EnvironmentService', () => {
           return defaultValue;
         }),
       } as any;
-      
+
       const productionService = new EnvironmentService(productionConfigService);
       const result = productionService.isProduction();
       expect(result).toBe(true);
@@ -281,7 +281,7 @@ describe('EnvironmentService', () => {
           return defaultValue;
         }),
       } as any;
-      
+
       const testService = new EnvironmentService(testConfigService);
       const result = testService.isTest();
       expect(result).toBe(true);

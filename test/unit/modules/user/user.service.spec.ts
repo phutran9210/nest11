@@ -240,9 +240,7 @@ describe('UserService', () => {
       expect(mockLogger.logBusiness).toHaveBeenCalledWith('update', 'user', userId, {
         ...updateUserDto,
       });
-      expect(mockUserRepository.save).toHaveBeenCalledWith(
-        expect.objectContaining(updateUserDto),
-      );
+      expect(mockUserRepository.save).toHaveBeenCalledWith(expect.objectContaining(updateUserDto));
       expect(mockLogger.logBusiness).toHaveBeenCalledWith('updated', 'user', userId);
       expect(result).toEqual(updatedUser);
     });
@@ -252,7 +250,7 @@ describe('UserService', () => {
         ...updateUserDto,
         password: 'newPassword',
       };
-      
+
       mockUserRepository.findOne.mockResolvedValue(mockUser);
       const updatedUser = { ...mockUser, ...updateWithPassword, password: 'hashedNewPassword' };
       mockUserRepository.save.mockResolvedValue(updatedUser);

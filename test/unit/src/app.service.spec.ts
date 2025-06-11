@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AppService, IHealthCheckResponse } from '../../../src/app.service';
-import { CustomLoggerService } from '../../../src/core/logger/logger.service';
+import { AppService, IHealthCheckResponse } from '~/app.service';
+import { CustomLoggerService } from '~core/logger/logger.service';
 
 describe('AppService', () => {
   let service: AppService;

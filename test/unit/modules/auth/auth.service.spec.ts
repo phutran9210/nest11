@@ -54,12 +54,7 @@ describe('AuthService', () => {
       },
     } as any;
 
-    service = new AuthService(
-      mockUserService,
-      mockJwtService,
-      mockLogger,
-      mockEnvironmentService,
-    );
+    service = new AuthService(mockUserService, mockJwtService, mockLogger, mockEnvironmentService);
 
     jest.clearAllMocks();
   });
@@ -82,24 +77,18 @@ describe('AuthService', () => {
 
       const result = await service.register(registerDto);
 
-      expect(mockLogger.logBusiness).toHaveBeenCalledWith(
-        'register_attempt',
-        'auth',
-        undefined,
-        { email: registerDto.email },
-      );
+      expect(mockLogger.logBusiness).toHaveBeenCalledWith('register_attempt', 'auth', undefined, {
+        email: registerDto.email,
+      });
       expect(mockUserService.findByEmail).toHaveBeenCalledWith(registerDto.email);
       expect(mockUserService.create).toHaveBeenCalledWith({
         name: registerDto.name,
         email: registerDto.email,
         password: registerDto.password,
       });
-      expect(mockLogger.logBusiness).toHaveBeenCalledWith(
-        'registered',
-        'auth',
-        mockUser.id,
-        { email: mockUser.email },
-      );
+      expect(mockLogger.logBusiness).toHaveBeenCalledWith('registered', 'auth', mockUser.id, {
+        email: mockUser.email,
+      });
       expect(result).toEqual({
         accessToken: 'jwt-token',
         tokenType: 'Bearer',
@@ -142,18 +131,12 @@ describe('AuthService', () => {
 
       const result = await service.login(loginDto);
 
-      expect(mockLogger.logBusiness).toHaveBeenCalledWith(
-        'login_attempt',
-        'auth',
-        undefined,
-        { email: loginDto.email },
-      );
-      expect(mockLogger.logBusiness).toHaveBeenCalledWith(
-        'logged_in',
-        'auth',
-        mockUser.id,
-        { email: mockUser.email },
-      );
+      expect(mockLogger.logBusiness).toHaveBeenCalledWith('login_attempt', 'auth', undefined, {
+        email: loginDto.email,
+      });
+      expect(mockLogger.logBusiness).toHaveBeenCalledWith('logged_in', 'auth', mockUser.id, {
+        email: mockUser.email,
+      });
       expect(result).toEqual({
         accessToken: 'jwt-token',
         tokenType: 'Bearer',

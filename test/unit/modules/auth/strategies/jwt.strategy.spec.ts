@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UnauthorizedException } from '@nestjs/common';
-import { JwtStrategy, JwtPayload } from '../../../../../src/modules/auth/strategies/jwt.strategy';
-import { UserService } from '../../../../../src/modules/user/user.service';
-import { EnvironmentService } from '../../../../../src/shared/services';
-import { UserEntity } from '../../../../../src/shared/entities/user.entity';
+import { JwtStrategy, JwtPayload } from '~modules/auth/strategies/jwt.strategy';
+import { UserService } from '~modules/user/user.service';
+import { EnvironmentService } from '~shared/services';
+import { UserEntity } from '~shared/entities/user.entity';
 
 describe('JwtStrategy', () => {
   let strategy: JwtStrategy;

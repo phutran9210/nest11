@@ -29,6 +29,8 @@ export const getDatabaseConfig = (configService: ConfigService): TypeOrmModuleOp
   const isProduction = nodeEnv === 'production';
   const isTest = nodeEnv === 'test';
 
+  // SAFETY: Always use explicit false defaults to prevent data loss
+
   const config: IDatabaseConfig = {
     type: 'postgres',
     host: configService.get<string>('DB_HOST', 'localhost'),
@@ -37,14 +39,14 @@ export const getDatabaseConfig = (configService: ConfigService): TypeOrmModuleOp
     password: configService.get<string>('DB_PASSWORD', 'password'),
     database: configService.get<string>('DB_NAME', isTest ? 'test_db' : 'mydb'),
 
-    // Schema management
-    synchronize: configService.get<boolean>('DB_SYNCHRONIZE', !isProduction),
-    migrationsRun: configService.get<boolean>('DB_MIGRATIONS_RUN', isProduction),
-    dropSchema: configService.get<boolean>('DB_DROP_SCHEMA', isTest),
+    // Schema management - SAFEGUARDS: Never drop or auto-sync in development
+    synchronize: configService.get<boolean>('DB_SYNCHRONIZE', false), // Always false unless explicitly set
+    migrationsRun: configService.get<boolean>('DB_MIGRATIONS_RUN', false), // Never auto-run migrations
+    dropSchema: configService.get<boolean>('DB_DROP_SCHEMA', false), // Never drop schema unless explicitly set
 
-    // Entities and migrations
-    entities: [configService.get<string>('DB_ENTITIES_PATH', 'dist/**/*.entity{.ts,.js}')],
-    migrations: [configService.get<string>('DB_MIGRATIONS_PATH', 'dist/migrations/*{.ts,.js}')],
+    // Entities and migrations - Will be overridden in DatabaseModule for explicit imports
+    entities: [],
+    migrations: [],
 
     // Logging
     logging: configService.get<boolean>('DB_LOGGING', !isProduction)

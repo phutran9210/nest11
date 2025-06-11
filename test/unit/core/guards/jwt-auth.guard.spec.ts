@@ -39,9 +39,12 @@ describe('JwtAuthGuard', () => {
 
     it('should call super.canActivate for protected routes', () => {
       mockReflector.getAllAndOverride.mockReturnValue(false);
-      
+
       // Mock the super.canActivate method
-      const superCanActivateSpy = jest.spyOn(Object.getPrototypeOf(Object.getPrototypeOf(guard)), 'canActivate');
+      const superCanActivateSpy = jest.spyOn(
+        Object.getPrototypeOf(Object.getPrototypeOf(guard)),
+        'canActivate',
+      );
       superCanActivateSpy.mockReturnValue(true);
 
       const result = guard.canActivate(mockExecutionContext);
@@ -51,14 +54,17 @@ describe('JwtAuthGuard', () => {
         mockExecutionContext.getClass(),
       ]);
       expect(superCanActivateSpy).toHaveBeenCalledWith(mockExecutionContext);
-      
+
       superCanActivateSpy.mockRestore();
     });
 
     it('should call super.canActivate when isPublic is undefined', () => {
       mockReflector.getAllAndOverride.mockReturnValue(undefined);
-      
-      const superCanActivateSpy = jest.spyOn(Object.getPrototypeOf(Object.getPrototypeOf(guard)), 'canActivate');
+
+      const superCanActivateSpy = jest.spyOn(
+        Object.getPrototypeOf(Object.getPrototypeOf(guard)),
+        'canActivate',
+      );
       superCanActivateSpy.mockReturnValue(true);
 
       const result = guard.canActivate(mockExecutionContext);
@@ -68,14 +74,14 @@ describe('JwtAuthGuard', () => {
         mockExecutionContext.getClass(),
       ]);
       expect(superCanActivateSpy).toHaveBeenCalledWith(mockExecutionContext);
-      
+
       superCanActivateSpy.mockRestore();
     });
 
     it('should check both handler and class for metadata', () => {
       const mockHandler = jest.fn();
       const mockClass = jest.fn();
-      
+
       mockExecutionContext.getHandler.mockReturnValue(mockHandler);
       mockExecutionContext.getClass.mockReturnValue(mockClass);
       mockReflector.getAllAndOverride.mockReturnValue(true);
@@ -92,7 +98,7 @@ describe('JwtAuthGuard', () => {
   describe('constructor', () => {
     it('should create guard with reflector dependency', () => {
       const newGuard = new JwtAuthGuard(mockReflector);
-      
+
       expect(newGuard).toBeInstanceOf(JwtAuthGuard);
       expect(newGuard['reflector']).toBe(mockReflector);
     });

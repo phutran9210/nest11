@@ -9,6 +9,8 @@ import { UserModule } from '~modules/user/user.module';
 import { AuthModule } from '~modules/auth/auth.module';
 import { LoggingInterceptor } from '~core/interceptors/logging.interceptor';
 import { JwtAuthGuard } from '~core/guards';
+import { RedisCacheModule } from '~core/cache';
+import { RedisModule } from '~core/redis';
 
 @Module({
   imports: [
@@ -16,6 +18,8 @@ import { JwtAuthGuard } from '~core/guards';
       isGlobal: true,
       envFilePath: '.env',
     }),
+    RedisCacheModule,
+    RedisModule,
     SharedModule,
     CoreModule,
     UserModule,

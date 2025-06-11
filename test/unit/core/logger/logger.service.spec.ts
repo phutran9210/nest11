@@ -188,16 +188,13 @@ describe('CustomLoggerService', () => {
 
       service.logRequest(method, url, statusCode, duration, userAgent);
 
-      expect(mockWinstonLogger.http).toHaveBeenCalledWith(
-        `HTTP ${statusCode}: ${method} ${url}`,
-        {
-          method,
-          url,
-          statusCode,
-          duration,
-          userAgent,
-        },
-      );
+      expect(mockWinstonLogger.http).toHaveBeenCalledWith(`HTTP ${statusCode}: ${method} ${url}`, {
+        method,
+        url,
+        statusCode,
+        duration,
+        userAgent,
+      });
     });
 
     it('should log failed HTTP request with warning', () => {
@@ -209,16 +206,13 @@ describe('CustomLoggerService', () => {
 
       service.logRequest(method, url, statusCode, duration, userAgent);
 
-      expect(mockWinstonLogger.warn).toHaveBeenCalledWith(
-        `HTTP ${statusCode}: ${method} ${url}`,
-        {
-          method,
-          url,
-          statusCode,
-          duration,
-          userAgent,
-        },
-      );
+      expect(mockWinstonLogger.warn).toHaveBeenCalledWith(`HTTP ${statusCode}: ${method} ${url}`, {
+        method,
+        url,
+        statusCode,
+        duration,
+        userAgent,
+      });
     });
   });
 
