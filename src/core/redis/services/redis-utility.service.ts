@@ -228,6 +228,45 @@ export class RedisUtilityService {
     }
   }
 
+  async setex(key: string, seconds: number, value: string): Promise<string> {
+    if (!this.client) {
+      this.logger.warn('Redis client not available, skipping setex operation');
+      return 'OK';
+    }
+    try {
+      return await this.client.setex(key, seconds, value);
+    } catch (error) {
+      this.logger.error(`Error setting key ${key} with expiration:`, error);
+      throw error;
+    }
+  }
+
+  async incr(key: string): Promise<number> {
+    if (!this.client) {
+      this.logger.warn('Redis client not available, skipping incr operation');
+      return 0;
+    }
+    try {
+      return await this.client.incr(key);
+    } catch (error) {
+      this.logger.error(`Error incrementing key ${key}:`, error);
+      throw error;
+    }
+  }
+
+  async get(key: string): Promise<string | null> {
+    if (!this.client) {
+      this.logger.warn('Redis client not available, skipping get operation');
+      return null;
+    }
+    try {
+      return await this.client.get(key);
+    } catch (error) {
+      this.logger.error(`Error getting key ${key}:`, error);
+      throw error;
+    }
+  }
+
   // Pipeline and transaction operations
   pipeline() {
     if (!this.client) {

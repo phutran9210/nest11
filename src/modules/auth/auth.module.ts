@@ -5,11 +5,13 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { UserModule } from '~modules/user/user.module';
+import { SecurityModule } from '~core/security/security.module';
 import { EnvironmentService } from '~shared/services';
 
 @Module({
   imports: [
     UserModule,
+    SecurityModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.registerAsync({
       useFactory: (environmentService: EnvironmentService) => ({

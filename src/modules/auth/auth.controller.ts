@@ -2,7 +2,7 @@ import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { LoginDto, RegisterDto, AuthResponseDto } from '~shared/dto/auth';
-import { Public, ApiCreateOperation } from '~core/decorators';
+import { Public, ApiCreateOperation, ClientIp } from '~core/decorators';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -46,7 +46,14 @@ export class AuthController {
     status: HttpStatus.UNAUTHORIZED,
     description: 'Invalid credentials',
   })
-  async login(@Body() loginDto: LoginDto): Promise<AuthResponseDto> {
-    return this.authService.login(loginDto);
+  @ApiResponse({
+    status: HttpStatus.TOO_MANY_REQUESTS,
+    description: 'Too many login attempts',
+  })
+  async login(@Body() loginDto: LoginDto, @ClientIp() ipAddress: string): Promise<AuthResponseDto> {
+    // Check rate limits before attempting login
+    await this.authService.checkLoginRateLimit(ipAddress, loginDto.email);
+
+    return this.authService.login(loginDto, ipAddress);
   }
 }

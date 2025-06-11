@@ -4,6 +4,7 @@ import * as bcrypt from 'bcrypt';
 import { UserService } from '~modules/user/user.service';
 import { CustomLoggerService } from '~core/logger/logger.service';
 import { EnvironmentService } from '~shared/services';
+import { RateLimitService } from '~core/security';
 import { LoginDto, RegisterDto, AuthResponseDto } from '~shared/dto/auth';
 import { UserEntity } from '~shared/entities/user.entity';
 import { JwtPayload } from './strategies/jwt.strategy';
@@ -14,17 +15,20 @@ export class AuthService {
   private readonly userService: UserService;
   private readonly jwtService: JwtService;
   private readonly environmentService: EnvironmentService;
+  private readonly rateLimitService: RateLimitService;
 
   constructor(
     userService: UserService,
     jwtService: JwtService,
     logger: CustomLoggerService,
     environmentService: EnvironmentService,
+    rateLimitService: RateLimitService,
   ) {
     this.userService = userService;
     this.jwtService = jwtService;
     this.logger = logger;
     this.environmentService = environmentService;
+    this.rateLimitService = rateLimitService;
   }
 
   async register(registerDto: RegisterDto): Promise<AuthResponseDto> {
@@ -49,7 +53,7 @@ export class AuthService {
     return this.generateAuthResponse(user);
   }
 
-  async login(loginDto: LoginDto): Promise<AuthResponseDto> {
+  async login(loginDto: LoginDto, ipAddress?: string): Promise<AuthResponseDto> {
     this.logger.logBusiness('login_attempt', 'auth', undefined, { email: loginDto.email });
 
     const user = await this.validateUser(loginDto.email, loginDto.password);
@@ -58,8 +62,40 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
+    // Reset rate limits on successful login
+    if (ipAddress) {
+      await this.rateLimitService.resetLoginRateLimit(ipAddress, loginDto.email);
+    }
+
     this.logger.logBusiness('logged_in', 'auth', user.id, { email: user.email });
     return this.generateAuthResponse(user);
+  }
+
+  /**
+   * Check rate limits before attempting login
+   */
+  async checkLoginRateLimit(ipAddress: string, email: string): Promise<void> {
+    // Check IP-based rate limit
+    const ipResult = await this.rateLimitService.checkLoginAttempts(ipAddress);
+    if (!ipResult.allowed) {
+      const message = ipResult.blocked
+        ? `Too many login attempts from this IP. Try again after ${new Date(ipResult.resetTime).toLocaleTimeString()}`
+        : 'Too many login attempts from this IP. Please try again later.';
+
+      this.logger.warn(`IP rate limit exceeded: ${ipAddress}`, 'AuthService');
+      throw new UnauthorizedException(message);
+    }
+
+    // Check username-based rate limit
+    const userResult = await this.rateLimitService.checkUsernameAttempts(email);
+    if (!userResult.allowed) {
+      const message = userResult.blocked
+        ? `Too many login attempts for this account. Try again after ${new Date(userResult.resetTime).toLocaleTimeString()}`
+        : 'Too many login attempts for this account. Please try again later.';
+
+      this.logger.warn(`Username rate limit exceeded: ${email}`, 'AuthService');
+      throw new UnauthorizedException(message);
+    }
   }
 
   async validateUser(email: string, password: string): Promise<UserEntity | null> {
