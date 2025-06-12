@@ -30,11 +30,30 @@ export interface LoggingConfig {
   enableFileLogging: boolean;
 }
 
+export interface RateLimitConfig {
+  loginIp: {
+    maxAttempts: number;
+    windowMs: number;
+    blockDurationMs: number;
+  };
+  loginUser: {
+    maxAttempts: number;
+    windowMs: number;
+    blockDurationMs: number;
+  };
+  api: {
+    maxAttempts: number;
+    windowMs: number;
+    blockDurationMs: number;
+  };
+}
+
 export interface EnvironmentVariables {
   app: AppConfig;
   database: DatabaseConfig;
   security: SecurityConfig;
   logging: LoggingConfig;
+  rateLimit: RateLimitConfig;
 }
 
 @Injectable()
@@ -85,12 +104,60 @@ export class EnvironmentService {
     };
   }
 
+  get rateLimit(): RateLimitConfig {
+    return {
+      loginIp: {
+        maxAttempts: parseInt(
+          this.configService.get<string>('RATE_LIMIT_LOGIN_IP_MAX_ATTEMPTS', '5'),
+          10,
+        ),
+        windowMs: parseInt(
+          this.configService.get<string>('RATE_LIMIT_LOGIN_IP_WINDOW_MS', '900000'),
+          10,
+        ),
+        blockDurationMs: parseInt(
+          this.configService.get<string>('RATE_LIMIT_LOGIN_IP_BLOCK_DURATION_MS', '1800000'),
+          10,
+        ),
+      },
+      loginUser: {
+        maxAttempts: parseInt(
+          this.configService.get<string>('RATE_LIMIT_LOGIN_USER_MAX_ATTEMPTS', '3'),
+          10,
+        ),
+        windowMs: parseInt(
+          this.configService.get<string>('RATE_LIMIT_LOGIN_USER_WINDOW_MS', '900000'),
+          10,
+        ),
+        blockDurationMs: parseInt(
+          this.configService.get<string>('RATE_LIMIT_LOGIN_USER_BLOCK_DURATION_MS', '3600000'),
+          10,
+        ),
+      },
+      api: {
+        maxAttempts: parseInt(
+          this.configService.get<string>('RATE_LIMIT_API_MAX_ATTEMPTS', '100'),
+          10,
+        ),
+        windowMs: parseInt(
+          this.configService.get<string>('RATE_LIMIT_API_WINDOW_MS', '900000'),
+          10,
+        ),
+        blockDurationMs: parseInt(
+          this.configService.get<string>('RATE_LIMIT_API_BLOCK_DURATION_MS', '1800000'),
+          10,
+        ),
+      },
+    };
+  }
+
   get all(): EnvironmentVariables {
     return {
       app: this.app,
       database: this.database,
       security: this.security,
       logging: this.logging,
+      rateLimit: this.rateLimit,
     };
   }
 

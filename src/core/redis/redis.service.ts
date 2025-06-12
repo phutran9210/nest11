@@ -258,4 +258,9 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
   getConnectionStatus(): string {
     return this.utility.getConnectionStatus();
   }
+
+  // Direct client access for advanced operations
+  getClient(): Redis | null {
+    return this.client;
+  }
 }
