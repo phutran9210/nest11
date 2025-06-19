@@ -7,6 +7,7 @@ import { CoreModule } from '~core/core.module';
 import { SharedModule } from '~shared/shared.module';
 import { UserModule } from '~modules/user/user.module';
 import { AuthModule } from '~modules/auth/auth.module';
+import { RbacModule } from '~modules/rbac/rbac.module';
 import { LoggingInterceptor } from '~core/interceptors/logging.interceptor';
 import { JwtAuthGuard } from '~core/guards';
 import { RedisCacheModule } from '~core/cache';
@@ -24,6 +25,7 @@ import { RedisModule } from '~core/redis';
     CoreModule,
     UserModule,
     AuthModule,
+    RbacModule,
   ],
   controllers: [AppController],
   providers: [

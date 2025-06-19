@@ -6,7 +6,7 @@ import { UserService } from '~modules/user/user.service';
 import { CustomLoggerService } from '~core/logger/logger.service';
 import { EnvironmentService, IdempotencyService } from '~shared/services';
 import { RateLimitService } from '~core/security';
-import { RedisLockService } from '~core/redis/services';
+// import { RedisLockService } from '~core/redis/services';
 import { LoginDto, RegisterDto, AuthResponseDto } from '~shared/dto/auth';
 import { UserEntity } from '~shared/entities/user.entity';
 import { IdempotencyStatus } from '~shared/entities/idempotency-key.entity';
@@ -20,7 +20,7 @@ export class AuthService {
   private readonly environmentService: EnvironmentService;
   private readonly rateLimitService: RateLimitService;
   private readonly idempotencyService: IdempotencyService;
-  private readonly redisLockService: RedisLockService;
+  // private readonly redisLockService: RedisLockService;
 
   constructor(
     userService: UserService,
@@ -29,7 +29,7 @@ export class AuthService {
     environmentService: EnvironmentService,
     rateLimitService: RateLimitService,
     idempotencyService: IdempotencyService,
-    redisLockService: RedisLockService,
+    // redisLockService: RedisLockService,
   ) {
     this.userService = userService;
     this.jwtService = jwtService;
@@ -37,25 +37,22 @@ export class AuthService {
     this.environmentService = environmentService;
     this.rateLimitService = rateLimitService;
     this.idempotencyService = idempotencyService;
-    this.redisLockService = redisLockService;
+    // this.redisLockService = redisLockService;
   }
 
   async register(registerDto: RegisterDto): Promise<AuthResponseDto> {
     this.logger.logBusiness('register_attempt', 'auth', undefined, { email: registerDto.email });
 
     const idempotencyKey = registerDto.idempotencyKey ?? randomUUID();
-    const lockKey = `user_registration:${registerDto.email}`;
+    // const lockKey = `user_registration:${registerDto.email}`;
 
     const idempotencyResult = await this.checkIdempotency(idempotencyKey, registerDto);
     if (idempotencyResult) {
       return idempotencyResult;
     }
 
-    return this.redisLockService.withLock(
-      lockKey,
-      () => this.performRegistration(registerDto, idempotencyKey),
-      { ttl: 30, retryCount: 5, retryDelay: 200 },
-    );
+    // Temporarily bypass Redis lock
+    return this.performRegistration(registerDto, idempotencyKey);
   }
 
   private async checkIdempotency(

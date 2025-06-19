@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { config } from 'dotenv';
 import { getDatabaseConfig } from '../../config/database.config';
 import { UserSeederService } from './user.seed';
+import { seedRbacData } from './rbac.seed';
 
 // Load environment variables
 
@@ -24,6 +25,7 @@ async function runSeeds() {
     // Run seeders
     console.log('Starting seed process...');
 
+    await seedRbacData(dataSource);
     await UserSeederService.run(dataSource);
 
     console.log('All seeds completed successfully!');

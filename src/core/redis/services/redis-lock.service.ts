@@ -9,11 +9,8 @@ export interface LockOptions {
 
 @Injectable()
 export class RedisLockService {
-  private readonly redisService: RedisService;
-
-  constructor(redisService: RedisService) {
-    this.redisService = redisService;
-  }
+  // eslint-disable-next-line @typescript-eslint/parameter-properties
+  constructor(private readonly redisService: RedisService) {}
 
   async acquireLock(
     key: string,
