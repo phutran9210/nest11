@@ -5,9 +5,9 @@ import { randomUUID } from 'crypto';
 import { UserService } from '~modules/user/user.service';
 import { CustomLoggerService } from '~core/logger/logger.service';
 import { EnvironmentService, IdempotencyService } from '~shared/services';
-import { RateLimitService } from '~core/security';
+import { RateLimitService, JwtBlacklistService } from '~core/security';
 // import { RedisLockService } from '~core/redis/services';
-import { LoginDto, RegisterDto, AuthResponseDto } from '~shared/dto/auth';
+import { LoginDto, RegisterDto, AuthResponseDto, RefreshTokenDto } from '~shared/dto/auth';
 import { UserEntity } from '~shared/entities/user.entity';
 import { IdempotencyStatus } from '~shared/entities/idempotency-key.entity';
 import { JwtPayload } from './strategies/jwt.strategy';
@@ -20,6 +20,7 @@ export class AuthService {
   private readonly environmentService: EnvironmentService;
   private readonly rateLimitService: RateLimitService;
   private readonly idempotencyService: IdempotencyService;
+  private readonly jwtBlacklistService: JwtBlacklistService;
   // private readonly redisLockService: RedisLockService;
 
   constructor(
@@ -29,6 +30,7 @@ export class AuthService {
     environmentService: EnvironmentService,
     rateLimitService: RateLimitService,
     idempotencyService: IdempotencyService,
+    jwtBlacklistService: JwtBlacklistService,
     // redisLockService: RedisLockService,
   ) {
     this.userService = userService;
@@ -37,6 +39,7 @@ export class AuthService {
     this.environmentService = environmentService;
     this.rateLimitService = rateLimitService;
     this.idempotencyService = idempotencyService;
+    this.jwtBlacklistService = jwtBlacklistService;
     // this.redisLockService = redisLockService;
   }
 
@@ -251,16 +254,36 @@ export class AuthService {
   }
 
   private generateAuthResponse(user: UserEntity): AuthResponseDto {
-    const payload: JwtPayload = {
+    const accessTokenId = randomUUID();
+    const refreshTokenId = randomUUID();
+
+    const accessPayload: JwtPayload = {
       sub: user.id,
       email: user.email,
+      jti: accessTokenId,
+      type: 'access',
     };
 
-    const accessToken = this.jwtService.sign(payload);
+    const refreshPayload: JwtPayload = {
+      sub: user.id,
+      email: user.email,
+      jti: refreshTokenId,
+      type: 'refresh',
+    };
+
+    const accessToken = this.jwtService.sign(accessPayload, {
+      expiresIn: this.environmentService.security.jwtExpiresIn,
+    });
+
+    const refreshToken = this.jwtService.sign(refreshPayload, {
+      expiresIn: '7d',
+    });
+
     const expiresIn = this.parseExpirationTime(this.environmentService.security.jwtExpiresIn);
 
     return {
       accessToken,
+      refreshToken,
       tokenType: 'Bearer',
       expiresIn,
       user: {
@@ -271,6 +294,67 @@ export class AuthService {
         updatedAt: user.updatedAt,
       },
     };
+  }
+
+  async refreshToken(refreshTokenDto: RefreshTokenDto): Promise<AuthResponseDto> {
+    try {
+      const decoded = this.jwtService.verify<JwtPayload>(refreshTokenDto.refreshToken);
+
+      if (decoded.type !== 'refresh') {
+        throw new UnauthorizedException('Invalid token type');
+      }
+
+      const isBlacklisted = await this.jwtBlacklistService.isRefreshTokenBlacklisted(decoded.jti);
+      if (isBlacklisted) {
+        throw new UnauthorizedException('Refresh token has been revoked');
+      }
+
+      if (decoded.iat) {
+        const isUserTokenValid = await this.jwtBlacklistService.isUserTokenValid(
+          decoded.sub,
+          decoded.iat,
+        );
+        if (!isUserTokenValid) {
+          throw new UnauthorizedException('Refresh token has been invalidated');
+        }
+      }
+
+      const user = await this.userService.findOne(decoded.sub);
+      if (!user) {
+        throw new UnauthorizedException('User not found');
+      }
+
+      await this.jwtBlacklistService.blacklistRefreshToken(decoded.jti, 7 * 24 * 60 * 60);
+
+      this.logger.logBusiness('token_refreshed', 'auth', user.id, { email: user.email });
+      return this.generateAuthResponse(user);
+    } catch (error) {
+      if (error instanceof UnauthorizedException) {
+        throw error;
+      }
+      this.logger.warn('Invalid refresh token attempt', 'AuthService');
+      throw new UnauthorizedException('Invalid refresh token');
+    }
+  }
+
+  async logout(user: UserEntity, accessToken: string): Promise<void> {
+    try {
+      const decoded = this.jwtService.decode(accessToken) as JwtPayload;
+      if (decoded && decoded.jti) {
+        const expiresIn = decoded.exp ? decoded.exp - Math.floor(Date.now() / 1000) : 3600;
+        if (expiresIn > 0) {
+          await this.jwtBlacklistService.blacklistToken(decoded.jti, expiresIn);
+        }
+      }
+      this.logger.logBusiness('logged_out', 'auth', user.id, { email: user.email });
+    } catch (error) {
+      this.logger.error('Error during logout', String(error), 'AuthService', { userId: user.id });
+    }
+  }
+
+  async logoutAll(user: UserEntity): Promise<void> {
+    await this.jwtBlacklistService.blacklistAllUserTokens(user.id);
+    this.logger.logBusiness('logged_out_all', 'auth', user.id, { email: user.email });
   }
 
   private parseExpirationTime(expiresIn: string): number {

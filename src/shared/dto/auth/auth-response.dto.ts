@@ -21,6 +21,12 @@ export class AuthResponseDto {
   expiresIn: number;
 
   @ApiProperty({
+    description: 'JWT refresh token',
+    example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+  })
+  refreshToken: string;
+
+  @ApiProperty({
     description: 'Authenticated user information',
     type: AuthUserDto,
   })
