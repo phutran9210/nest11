@@ -2,60 +2,48 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from '~/app.module';
 import { validationPipeConfig } from '~/core/config/validation.config';
 import { setupSwagger } from '~/core/config/swagger.config';
+import { setupCors, setupSecurity, CorsService } from '~/core/config';
+import { INestApplication } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
-async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+async function killPortProcess(port: number): Promise<void> {
+  try {
+    const childProcess = await import('child_process');
+    childProcess.execSync(`fuser -k ${port}/tcp || true`, { stdio: 'ignore' });
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+  } catch {
+    console.log('Could not kill process, trying next retry...');
+  }
+}
 
-  // Use Pipes for validation
-  app.useGlobalPipes(validationPipeConfig);
-
-  // Setup Swagger for API documentation
-  setupSwagger(app);
-
-  // Enable graceful shutdown hooks
-  app.enableShutdownHooks();
-
-  const port = process.env.PORT ?? 3000;
-
-  // Retry logic for port binding
-  let retries = 3;
+async function listenWithRetry(app: INestApplication, port: number, maxRetries = 3): Promise<void> {
+  let retries = maxRetries;
   while (retries > 0) {
     try {
       await app.listen(port);
-      break;
+      return;
     } catch (error: unknown) {
       const errorCode =
         error instanceof Error && 'code' in error ? (error as { code: string }).code : undefined;
       if (errorCode === 'EADDRINUSE' && retries > 1) {
         console.log(`⚠️ Port ${port} is busy, killing process and retrying...`);
-
-        // Kill process using the port
-        try {
-          const childProcess = await import('child_process');
-          childProcess.execSync(`fuser -k ${port}/tcp || true`, { stdio: 'ignore' });
-          await new Promise((resolve) => setTimeout(resolve, 1000)); // Wait 1 second
-          retries--;
-          continue;
-        } catch {
-          console.log('Could not kill process, trying next retry...');
-        }
+        await killPortProcess(port);
+        retries--;
+        continue;
       }
       throw error;
     }
   }
+}
 
-  // Graceful shutdown handling
+function setupGracefulShutdown(app: INestApplication): void {
   const signals = ['SIGTERM', 'SIGINT', 'SIGQUIT'] as const;
 
   const gracefulShutdown = async (signal: string) => {
     console.log(`\n🔄 Received ${signal}. Starting graceful shutdown...`);
-
     try {
-      // Close NestJS application (this will trigger all OnModuleDestroy hooks)
       await app.close();
       console.log('✅ Application closed successfully');
-
-      // Force close any remaining connections
       process.exit(0);
     } catch (error) {
       console.error('❌ Error during shutdown:', error);
@@ -67,7 +55,6 @@ async function bootstrap() {
     process.on(signal, () => void gracefulShutdown(signal));
   });
 
-  // Handle uncaught exceptions and unhandled rejections
   process.on('uncaughtException', (error) => {
     console.error('❌ Uncaught Exception:', error);
     void gracefulShutdown('uncaughtException');
@@ -77,10 +64,27 @@ async function bootstrap() {
     console.error('❌ Unhandled Rejection:', reason);
     void gracefulShutdown('unhandledRejection');
   });
+}
+
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+  const configService = app.get(ConfigService);
+  const corsService = app.get(CorsService);
+
+  setupSecurity(app, configService);
+  setupCors(app, corsService);
+
+  app.useGlobalPipes(validationPipeConfig);
+  setupSwagger(app);
+  app.enableShutdownHooks();
+
+  const port: number = Number(process.env.PORT) || 3000;
+
+  await listenWithRetry(app, port);
+
+  setupGracefulShutdown(app);
 
   console.log(`🚀 Application is running on: http://localhost:${port}`);
-  console.log(`📚 Swagger documentation: http://localhost:${port}/api`);
-  console.log('💡 Press Ctrl+C to stop the server');
 }
 
 void bootstrap().catch((error) => {

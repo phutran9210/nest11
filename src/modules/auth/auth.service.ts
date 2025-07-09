@@ -339,11 +339,13 @@ export class AuthService {
 
   async logout(user: UserEntity, accessToken: string): Promise<void> {
     try {
-      const decoded = this.jwtService.decode(accessToken) as JwtPayload;
-      if (decoded && decoded.jti) {
-        const expiresIn = decoded.exp ? decoded.exp - Math.floor(Date.now() / 1000) : 3600;
+      const decoded = this.jwtService.decode(accessToken);
+      if (decoded && typeof decoded === 'object' && 'jti' in decoded && 'exp' in decoded) {
+        const expiresIn = decoded.exp
+          ? (decoded.exp as number) - Math.floor(Date.now() / 1000)
+          : 3600;
         if (expiresIn > 0) {
-          await this.jwtBlacklistService.blacklistToken(decoded.jti, expiresIn);
+          await this.jwtBlacklistService.blacklistToken(decoded.jti as string, expiresIn);
         }
       }
       this.logger.logBusiness('logged_out', 'auth', user.id, { email: user.email });
