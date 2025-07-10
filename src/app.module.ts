@@ -12,12 +12,14 @@ import { LoggingInterceptor } from '~core/interceptors/logging.interceptor';
 import { JwtAuthGuard } from '~core/guards';
 import { RedisCacheModule } from '~core/cache';
 import { RedisModule } from '~core/redis';
+import mailerConfig from '~core/config/mailer.config';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
+      load: [mailerConfig],
     }),
     RedisCacheModule,
     RedisModule,
