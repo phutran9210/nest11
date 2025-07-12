@@ -47,6 +47,4 @@ async function testMailer() {
   }
 }
 
-testMailer()
-  .then(() => console.log('Done!'))
-  .catch(console.error);
+testMailer().catch(console.error);
