@@ -101,12 +101,30 @@ export const setupSecurity = (app: INestApplication, configService: ConfigServic
             }
           : false,
         crossOriginResourcePolicy: {
-          policy: securityConfig.helmet.crossOriginResourcePolicy as any,
+          policy: securityConfig.helmet.crossOriginResourcePolicy as
+            | 'same-site'
+            | 'same-origin'
+            | 'cross-origin',
         },
-        crossOriginOpenerPolicy: { policy: securityConfig.helmet.crossOriginOpenerPolicy as any },
+        crossOriginOpenerPolicy: {
+          policy: securityConfig.helmet.crossOriginOpenerPolicy as
+            | 'unsafe-none'
+            | 'same-origin-allow-popups'
+            | 'same-origin',
+        },
         crossOriginEmbedderPolicy: securityConfig.helmet.crossOriginEmbedderPolicy,
         originAgentCluster: securityConfig.helmet.originAgentCluster,
-        referrerPolicy: { policy: securityConfig.helmet.referrerPolicy as any },
+        referrerPolicy: {
+          policy: securityConfig.helmet.referrerPolicy as
+            | 'no-referrer'
+            | 'no-referrer-when-downgrade'
+            | 'origin'
+            | 'origin-when-cross-origin'
+            | 'same-origin'
+            | 'strict-origin'
+            | 'strict-origin-when-cross-origin'
+            | 'unsafe-url',
+        },
         strictTransportSecurity: securityConfig.helmet.strictTransportSecurity
           ? {
               maxAge: 31536000,
@@ -117,7 +135,9 @@ export const setupSecurity = (app: INestApplication, configService: ConfigServic
         xContentTypeOptions: securityConfig.helmet.xContentTypeOptions,
         xDnsPrefetchControl: { allow: !securityConfig.helmet.xDnsPrefetchControl },
         xDownloadOptions: securityConfig.helmet.xDownloadOptions,
-        xFrameOptions: { action: securityConfig.helmet.xFrameOptions.toLowerCase() as any },
+        xFrameOptions: {
+          action: securityConfig.helmet.xFrameOptions.toLowerCase() as 'deny' | 'sameorigin',
+        },
         xPermittedCrossDomainPolicies: securityConfig.helmet.xPermittedCrossDomainPolicies
           ? { permittedPolicies: 'none' }
           : false,
@@ -128,6 +148,9 @@ export const setupSecurity = (app: INestApplication, configService: ConfigServic
   }
 
   if (securityConfig.trustProxy) {
-    app.getHttpAdapter().getInstance().set('trust proxy', 1);
+    (app.getHttpAdapter().getInstance() as { set: (key: string, value: number) => void }).set(
+      'trust proxy',
+      1,
+    );
   }
 };

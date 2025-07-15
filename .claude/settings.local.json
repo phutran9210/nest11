@@ -6,8 +6,35 @@
       "Bash(pnpm run:*)",
       "Bash(mkdir:*)",
       "Bash(chmod:*)",
-      "Bash(pnpm lint-staged:*)"
+      "Bash(pnpm lint-staged:*)",
+      "Bash(find:*)",
+      "WebFetch(domain:docs.anthropic.com)",
+      "Bash(claude mcp:*)",
+      "Bash(docker run:*)",
+      "Bash(ls:*)",
+      "Bash(claude --version)",
+      "Bash(docker logs:*)",
+      "Bash(docker exec:*)",
+      "Bash(curl:*)",
+      "mcp__postgres-server__query",
+      "Bash(docker pull:*)",
+      "Bash(docker:*)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:hub.docker.com)",
+      "WebFetch(domain:help.figma.com)"
     ],
     "deny": []
+  },
+  "mcpServers": {
+    "postgres-server": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "--network=host",
+        "mcp/postgres"
+      ]
+    }
   }
 }

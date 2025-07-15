@@ -8,6 +8,7 @@ import { SharedModule } from '~shared/shared.module';
 import { UserModule } from '~modules/user/user.module';
 import { AuthModule } from '~modules/auth/auth.module';
 import { RbacModule } from '~modules/rbac/rbac.module';
+import { WebSocketModule } from '~modules/websocket';
 import { LoggingInterceptor } from '~core/interceptors/logging.interceptor';
 import { JwtAuthGuard } from '~core/guards';
 import { RedisCacheModule } from '~core/cache';
@@ -28,6 +29,7 @@ import mailerConfig from '~core/config/mailer.config';
     UserModule,
     AuthModule,
     RbacModule,
+    WebSocketModule,
   ],
   controllers: [AppController],
   providers: [
