@@ -1,40 +1,46 @@
 import {
-  Entity,
-  PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
-  ManyToOne,
+  Entity,
   JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
   Unique,
-} from 'typeorm';
-import { RoleEntity } from './role.entity';
+} from 'typeorm'
+import { RoleEntity } from './role.entity'
 
 @Entity('role_hierarchies')
 @Unique(['parentRoleId', 'childRoleId'])
 export class RoleHierarchyEntity {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id: string
 
   @Column({ name: 'parent_role_id' })
-  parentRoleId: string;
+  parentRoleId: string
 
   @Column({ name: 'child_role_id' })
-  childRoleId: string;
+  childRoleId: string
 
   @Column({ default: 1 })
-  depth: number;
+  depth: number
 
   @Column({ default: true })
-  isActive: boolean;
+  isActive: boolean
 
-  @ManyToOne(() => RoleEntity, (role) => role.childRoles)
+  @ManyToOne(
+    () => RoleEntity,
+    (role) => role.childRoles,
+  )
   @JoinColumn({ name: 'parent_role_id' })
-  parentRole: RoleEntity;
+  parentRole: RoleEntity
 
-  @ManyToOne(() => RoleEntity, (role) => role.parentRoles)
+  @ManyToOne(
+    () => RoleEntity,
+    (role) => role.parentRoles,
+  )
   @JoinColumn({ name: 'child_role_id' })
-  childRole: RoleEntity;
+  childRole: RoleEntity
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt: Date
 }

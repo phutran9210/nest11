@@ -1,28 +1,28 @@
-import { Exclude, Expose } from 'class-transformer';
-import { ApiIdField, ApiEmailField, ApiNameField } from '~/core/decorators';
+import { Exclude, Expose } from 'class-transformer'
+import { ApiEmailField, ApiIdField, ApiNameField } from '~/core/decorators'
 
 export class UserResponseDto {
   @ApiIdField({ description: 'User unique identifier' })
   @Expose()
-  id: string;
+  id: string
 
   @ApiEmailField({ required: false })
   @Expose()
-  email: string;
+  email: string
 
   @ApiNameField({ required: false })
   @Expose()
-  name: string;
+  name: string
 
   @Exclude()
-  password: string;
+  password: string
 
   @Exclude()
-  isActive: boolean;
+  isActive: boolean
 
   @Exclude()
-  createdAt: Date;
+  createdAt: Date
 
   @Exclude()
-  updatedAt: Date;
+  updatedAt: Date
 }

@@ -22,4 +22,4 @@ export const MESSAGES = {
     FORBIDDEN: 'Access forbidden',
     BAD_REQUEST: 'Bad request',
   },
-} as const;
+} as const

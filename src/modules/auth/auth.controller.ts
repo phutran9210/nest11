@@ -1,18 +1,17 @@
-import { Controller, Post, Body, HttpCode, HttpStatus, Headers } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
-import { Request } from 'express';
-import { AuthService } from './auth.service';
-import { LoginDto, RegisterDto, AuthResponseDto, RefreshTokenDto } from '~shared/dto/auth';
-import { Public, ApiCreateOperation, ClientIp, CurrentUser } from '~core/decorators';
-import { UserEntity } from '~shared/entities/user.entity';
+import { Body, Controller, Headers, HttpCode, HttpStatus, Post } from '@nestjs/common'
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
+import { ApiCreateOperation, ClientIp, CurrentUser, Public } from '~core/decorators'
+import { AuthResponseDto, type LoginDto, type RefreshTokenDto, RegisterDto } from '~shared/dto/auth'
+import type { UserEntity } from '~shared/entities/user.entity'
+import type { AuthService } from './auth.service'
 
 @ApiTags('Authentication')
 @Controller('auth')
 export class AuthController {
-  private readonly authService: AuthService;
+  private readonly authService: AuthService
 
   constructor(authService: AuthService) {
-    this.authService = authService;
+    this.authService = authService
   }
 
   @Public()
@@ -29,7 +28,7 @@ export class AuthController {
     description: 'Email already exists',
   })
   async register(@Body() registerDto: RegisterDto): Promise<AuthResponseDto> {
-    return this.authService.register(registerDto);
+    return this.authService.register(registerDto)
   }
 
   @Public()
@@ -54,9 +53,9 @@ export class AuthController {
   })
   async login(@Body() loginDto: LoginDto, @ClientIp() ipAddress: string): Promise<AuthResponseDto> {
     // Check rate limits before attempting login
-    await this.authService.checkLoginRateLimit(ipAddress, loginDto.email);
+    await this.authService.checkLoginRateLimit(ipAddress, loginDto.email)
 
-    return this.authService.login(loginDto, ipAddress);
+    return this.authService.login(loginDto, ipAddress)
   }
 
   @Public()
@@ -76,7 +75,7 @@ export class AuthController {
     description: 'Invalid refresh token',
   })
   async refresh(@Body() refreshTokenDto: RefreshTokenDto): Promise<AuthResponseDto> {
-    return this.authService.refreshToken(refreshTokenDto);
+    return this.authService.refreshToken(refreshTokenDto)
   }
 
   @Post('logout')
@@ -94,8 +93,8 @@ export class AuthController {
     @CurrentUser() user: UserEntity,
     @Headers('authorization') authorization: string,
   ): Promise<void> {
-    const token = authorization?.replace('Bearer ', '') || '';
-    await this.authService.logout(user, token);
+    const token = authorization?.replace('Bearer ', '') || ''
+    await this.authService.logout(user, token)
   }
 
   @Post('logout-all')
@@ -110,6 +109,6 @@ export class AuthController {
     description: 'User logged out from all devices successfully',
   })
   async logoutAll(@CurrentUser() user: UserEntity): Promise<void> {
-    await this.authService.logoutAll(user);
+    await this.authService.logoutAll(user)
   }
 }

@@ -1,15 +1,15 @@
-import { Controller, Get } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiOkResponse } from '@nestjs/swagger';
-import { AppService, IHealthCheckResponse } from '~/app.service';
-import { Public } from '~core/decorators';
+import { Controller, Get } from '@nestjs/common'
+import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
+import type { AppService, IHealthCheckResponse } from '~/app.service'
+import { Public } from '~core/decorators'
 
 @Controller('status')
 @ApiTags('health')
 export class AppController {
-  private readonly appService: AppService;
+  private readonly appService: AppService
 
   constructor(appService: AppService) {
-    this.appService = appService;
+    this.appService = appService
   }
 
   @Public()
@@ -32,6 +32,6 @@ export class AppController {
     },
   })
   checkHealth(): IHealthCheckResponse {
-    return this.appService.checkHealth();
+    return this.appService.checkHealth()
   }
 }

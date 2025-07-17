@@ -1,13 +1,13 @@
-import { Module } from '@nestjs/common';
-import { JwtModule } from '@nestjs/jwt';
-import { PassportModule } from '@nestjs/passport';
-import { AuthService } from './auth.service';
-import { AuthController } from './auth.controller';
-import { JwtStrategy } from './strategies/jwt.strategy';
-import { UserModule } from '~modules/user/user.module';
-import { SecurityModule } from '~core/security/security.module';
+import { Module } from '@nestjs/common'
+import { JwtModule } from '@nestjs/jwt'
+import { PassportModule } from '@nestjs/passport'
+import { SecurityModule } from '~core/security/security.module'
+import { UserModule } from '~modules/user/user.module'
 // import { RedisModule } from '~core/redis/redis.module';
-import { EnvironmentService } from '~shared/services';
+import { EnvironmentService } from '~shared/services'
+import { AuthController } from './auth.controller'
+import { AuthService } from './auth.service'
+import { JwtStrategy } from './strategies/jwt.strategy'
 
 @Module({
   imports: [

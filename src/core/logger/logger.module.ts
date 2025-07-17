@@ -1,8 +1,8 @@
-import { Module, Global } from '@nestjs/common';
-import { WinstonModule } from 'nest-winston';
-import * as winston from 'winston';
-import { CustomLoggerService } from './logger.service';
-import { loggerConfig } from '../config/logger.config';
+import { Global, Module } from '@nestjs/common'
+import { WinstonModule } from 'nest-winston'
+import type * as winston from 'winston'
+import { loggerConfig } from '~core/config'
+import { CustomLoggerService } from './logger.service'
 
 @Global()
 @Module({

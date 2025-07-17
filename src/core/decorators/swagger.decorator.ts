@@ -1,29 +1,29 @@
-import { applyDecorators, Type } from '@nestjs/common';
+import { applyDecorators, type Type } from '@nestjs/common'
 import {
-  ApiOperation,
-  ApiBody,
-  ApiParam,
-  ApiTags,
-  ApiOkResponse,
-  ApiCreatedResponse,
   ApiBadRequestResponse,
-  ApiNotFoundResponse,
-  ApiUnauthorizedResponse,
+  ApiBody,
+  ApiCreatedResponse,
   ApiForbiddenResponse,
   ApiInternalServerErrorResponse,
-} from '@nestjs/swagger';
-import { MESSAGES } from '../constant';
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiParam,
+  ApiTags,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger'
+import { MESSAGES } from '../constant'
 
 interface IApiOperationOptions {
-  summary: string;
-  description?: string;
-  tags?: string[];
+  summary: string
+  description?: string
+  tags?: string[]
 }
 
 interface IApiResponseOptions {
-  type?: Type<unknown> | (() => unknown) | [() => unknown] | string;
-  description?: string;
-  isArray?: boolean;
+  type?: Type<unknown> | (() => unknown) | [() => unknown] | string
+  description?: string
+  isArray?: boolean
 }
 
 // Common API responses
@@ -33,8 +33,8 @@ export const ApiCommonResponses = () => {
     ApiUnauthorizedResponse({ description: MESSAGES.COMMON.UNAUTHORIZED }),
     ApiForbiddenResponse({ description: MESSAGES.COMMON.FORBIDDEN }),
     ApiInternalServerErrorResponse({ description: MESSAGES.COMMON.ERROR }),
-  );
-};
+  )
+}
 
 // API Operation with common responses
 export const ApiOperationWithResponses = (options: IApiOperationOptions) => {
@@ -44,14 +44,14 @@ export const ApiOperationWithResponses = (options: IApiOperationOptions) => {
       description: options.description,
     }),
     ApiCommonResponses(),
-  ];
+  ]
 
   if (options.tags) {
-    decorators.push(ApiTags(...options.tags));
+    decorators.push(ApiTags(...options.tags))
   }
 
-  return applyDecorators(...decorators);
-};
+  return applyDecorators(...decorators)
+}
 
 // API Success Response
 export const ApiSuccessResponse = (options: IApiResponseOptions = {}) => {
@@ -61,8 +61,8 @@ export const ApiSuccessResponse = (options: IApiResponseOptions = {}) => {
       type: options.type,
       isArray: options.isArray,
     }),
-  );
-};
+  )
+}
 
 // API Created Response
 export const ApiCreatedSuccessResponse = (options: IApiResponseOptions = {}) => {
@@ -72,8 +72,8 @@ export const ApiCreatedSuccessResponse = (options: IApiResponseOptions = {}) => 
       type: options.type,
       isArray: options.isArray,
     }),
-  );
-};
+  )
+}
 
 // API Not Found Response
 export const ApiNotFoundErrorResponse = (description?: string) => {
@@ -81,15 +81,15 @@ export const ApiNotFoundErrorResponse = (description?: string) => {
     ApiNotFoundResponse({
       description: description || MESSAGES.COMMON.ERROR,
     }),
-  );
-};
+  )
+}
 
 // Complete CRUD API decorators
 export const ApiCreateOperation = (options: {
-  summary: string;
-  bodyType: Type<unknown>;
-  responseType?: Type<unknown>;
-  description?: string;
+  summary: string
+  bodyType: Type<unknown>
+  responseType?: Type<unknown>
+  description?: string
 }) => {
   return applyDecorators(
     ApiOperationWithResponses({
@@ -98,13 +98,13 @@ export const ApiCreateOperation = (options: {
     }),
     ApiBody({ type: options.bodyType }),
     ApiCreatedSuccessResponse({ type: options.responseType }),
-  );
-};
+  )
+}
 
 export const ApiGetAllOperation = (options: {
-  summary: string;
-  responseType: Type<unknown>;
-  description?: string;
+  summary: string
+  responseType: Type<unknown>
+  description?: string
 }) => {
   return applyDecorators(
     ApiOperationWithResponses({
@@ -112,14 +112,14 @@ export const ApiGetAllOperation = (options: {
       description: options.description,
     }),
     ApiSuccessResponse({ type: options.responseType, isArray: true }),
-  );
-};
+  )
+}
 
 export const ApiGetByIdOperation = (options: {
-  summary: string;
-  responseType: Type<unknown>;
-  paramName?: string;
-  description?: string;
+  summary: string
+  responseType: Type<unknown>
+  paramName?: string
+  description?: string
 }) => {
   return applyDecorators(
     ApiOperationWithResponses({
@@ -133,15 +133,15 @@ export const ApiGetByIdOperation = (options: {
     }),
     ApiSuccessResponse({ type: options.responseType }),
     ApiNotFoundErrorResponse(),
-  );
-};
+  )
+}
 
 export const ApiUpdateOperation = (options: {
-  summary: string;
-  bodyType: Type<unknown>;
-  responseType?: Type<unknown>;
-  paramName?: string;
-  description?: string;
+  summary: string
+  bodyType: Type<unknown>
+  responseType?: Type<unknown>
+  paramName?: string
+  description?: string
 }) => {
   return applyDecorators(
     ApiOperationWithResponses({
@@ -156,13 +156,13 @@ export const ApiUpdateOperation = (options: {
     ApiBody({ type: options.bodyType }),
     ApiSuccessResponse({ type: options.responseType }),
     ApiNotFoundErrorResponse(),
-  );
-};
+  )
+}
 
 export const ApiDeleteOperation = (options: {
-  summary: string;
-  paramName?: string;
-  description?: string;
+  summary: string
+  paramName?: string
+  description?: string
 }) => {
   return applyDecorators(
     ApiOperationWithResponses({
@@ -176,5 +176,5 @@ export const ApiDeleteOperation = (options: {
     }),
     ApiSuccessResponse({ description: 'Resource deleted successfully' }),
     ApiNotFoundErrorResponse(),
-  );
-};
+  )
+}

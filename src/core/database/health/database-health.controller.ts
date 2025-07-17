@@ -1,15 +1,15 @@
-import { Controller, Get } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
-import { ApiSuccessResponse } from '~/core/decorators';
-import { DatabaseHealthService, IDatabaseHealthStatus } from './database-health.service';
+import { Controller, Get } from '@nestjs/common'
+import { ApiTags } from '@nestjs/swagger'
+import { ApiSuccessResponse } from '~/core/decorators'
+import type { DatabaseHealthService, IDatabaseHealthStatus } from './database-health.service'
 
 @ApiTags('health')
 @Controller('health')
 export class DatabaseHealthController {
-  private readonly databaseHealthService: DatabaseHealthService;
+  private readonly databaseHealthService: DatabaseHealthService
 
   constructor(databaseHealthService: DatabaseHealthService) {
-    this.databaseHealthService = databaseHealthService;
+    this.databaseHealthService = databaseHealthService
   }
 
   @Get('database')
@@ -18,7 +18,7 @@ export class DatabaseHealthController {
     type: Object, // Could create a proper DTO here
   })
   async checkDatabaseHealth(): Promise<IDatabaseHealthStatus> {
-    return this.databaseHealthService.checkHealth();
+    return this.databaseHealthService.checkHealth()
   }
 
   @Get('database/status')
@@ -27,7 +27,7 @@ export class DatabaseHealthController {
     type: Boolean,
   })
   async isDatabaseHealthy(): Promise<{ healthy: boolean }> {
-    const isHealthy = await this.databaseHealthService.isHealthy();
-    return { healthy: isHealthy };
+    const isHealthy = await this.databaseHealthService.isHealthy()
+    return { healthy: isHealthy }
   }
 }

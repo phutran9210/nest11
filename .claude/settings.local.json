@@ -28,13 +28,7 @@
   "mcpServers": {
     "postgres-server": {
       "command": "docker",
-      "args": [
-        "run",
-        "-i",
-        "--rm",
-        "--network=host",
-        "mcp/postgres"
-      ]
+      "args": ["run", "-i", "--rm", "--network=host", "mcp/postgres"]
     }
   }
 }

@@ -1,18 +1,18 @@
-import { DataSource } from 'typeorm';
-import { RoleEntity } from '../../../shared/entities/role.entity';
+import type { DataSource } from 'typeorm'
 import {
-  PermissionEntity,
   PermissionAction,
+  PermissionEntity,
   PermissionResource,
-} from '../../../shared/entities/permission.entity';
-import { RoleHierarchyEntity } from '../../../shared/entities/role-hierarchy.entity';
+} from '../../../shared/entities/permission.entity'
+import { RoleEntity } from '../../../shared/entities/role.entity'
+import { RoleHierarchyEntity } from '../../../shared/entities/role-hierarchy.entity'
 
 export async function seedRbacData(dataSource: DataSource): Promise<void> {
-  console.log('🌱 Seeding RBAC data...');
+  console.log('🌱 Seeding RBAC data...')
 
-  const roleRepository = dataSource.getRepository(RoleEntity);
-  const permissionRepository = dataSource.getRepository(PermissionEntity);
-  const roleHierarchyRepository = dataSource.getRepository(RoleHierarchyEntity);
+  const roleRepository = dataSource.getRepository(RoleEntity)
+  const permissionRepository = dataSource.getRepository(PermissionEntity)
+  const roleHierarchyRepository = dataSource.getRepository(RoleHierarchyEntity)
 
   const permissions = [
     {
@@ -69,7 +69,7 @@ export async function seedRbacData(dataSource: DataSource): Promise<void> {
       resource: PermissionResource.ALL,
       description: 'Full system access',
     },
-  ];
+  ]
 
   const roles = [
     {
@@ -102,50 +102,50 @@ export async function seedRbacData(dataSource: DataSource): Promise<void> {
       level: 5,
       permissions: [],
     },
-  ];
+  ]
 
-  const savedPermissions: PermissionEntity[] = [];
+  const savedPermissions: PermissionEntity[] = []
   for (const permissionData of permissions) {
     const existingPermission = await permissionRepository.findOne({
       where: { name: permissionData.name },
-    });
+    })
 
     if (!existingPermission) {
-      const permission = permissionRepository.create(permissionData);
-      const savedPermission = await permissionRepository.save(permission);
-      savedPermissions.push(savedPermission);
-      console.log(`✅ Created permission: ${permissionData.name}`);
+      const permission = permissionRepository.create(permissionData)
+      const savedPermission = await permissionRepository.save(permission)
+      savedPermissions.push(savedPermission)
+      console.log(`✅ Created permission: ${permissionData.name}`)
     } else {
-      savedPermissions.push(existingPermission);
-      console.log(`🔄 Permission already exists: ${permissionData.name}`);
+      savedPermissions.push(existingPermission)
+      console.log(`🔄 Permission already exists: ${permissionData.name}`)
     }
   }
 
-  const savedRoles: RoleEntity[] = [];
+  const savedRoles: RoleEntity[] = []
   for (const roleData of roles) {
     const existingRole = await roleRepository.findOne({
       where: { name: roleData.name },
       relations: ['permissions'],
-    });
+    })
 
     if (!existingRole) {
       const role = roleRepository.create({
         name: roleData.name,
         description: roleData.description,
         level: roleData.level,
-      });
+      })
 
-      const rolePermissions = savedPermissions.filter((p) => roleData.permissions.includes(p.name));
+      const rolePermissions = savedPermissions.filter((p) => roleData.permissions.includes(p.name))
 
-      role.permissions = rolePermissions;
-      const savedRole = await roleRepository.save(role);
-      savedRoles.push(savedRole);
+      role.permissions = rolePermissions
+      const savedRole = await roleRepository.save(role)
+      savedRoles.push(savedRole)
       console.log(
         `✅ Created role: ${roleData.name} with ${String(rolePermissions.length)} permissions`,
-      );
+      )
     } else {
-      savedRoles.push(existingRole);
-      console.log(`🔄 Role already exists: ${roleData.name}`);
+      savedRoles.push(existingRole)
+      console.log(`🔄 Role already exists: ${roleData.name}`)
     }
   }
 
@@ -154,11 +154,11 @@ export async function seedRbacData(dataSource: DataSource): Promise<void> {
     { parent: 'Admin', child: 'Manager' },
     { parent: 'Manager', child: 'User' },
     { parent: 'User', child: 'Guest' },
-  ];
+  ]
 
   for (const hierarchy of hierarchies) {
-    const parentRole = savedRoles.find((r) => r.name === hierarchy.parent);
-    const childRole = savedRoles.find((r) => r.name === hierarchy.child);
+    const parentRole = savedRoles.find((r) => r.name === hierarchy.parent)
+    const childRole = savedRoles.find((r) => r.name === hierarchy.child)
 
     if (parentRole && childRole) {
       const existingHierarchy = await roleHierarchyRepository.findOne({
@@ -166,22 +166,22 @@ export async function seedRbacData(dataSource: DataSource): Promise<void> {
           parentRoleId: parentRole.id,
           childRoleId: childRole.id,
         },
-      });
+      })
 
       if (!existingHierarchy) {
         const roleHierarchy = roleHierarchyRepository.create({
           parentRoleId: parentRole.id,
           childRoleId: childRole.id,
           depth: 1,
-        });
+        })
 
-        await roleHierarchyRepository.save(roleHierarchy);
-        console.log(`✅ Created role hierarchy: ${hierarchy.parent} -> ${hierarchy.child}`);
+        await roleHierarchyRepository.save(roleHierarchy)
+        console.log(`✅ Created role hierarchy: ${hierarchy.parent} -> ${hierarchy.child}`)
       } else {
-        console.log(`🔄 Role hierarchy already exists: ${hierarchy.parent} -> ${hierarchy.child}`);
+        console.log(`🔄 Role hierarchy already exists: ${hierarchy.parent} -> ${hierarchy.child}`)
       }
     }
   }
 
-  console.log('🎉 RBAC data seeding completed!');
+  console.log('🎉 RBAC data seeding completed!')
 }

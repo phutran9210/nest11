@@ -1,9 +1,9 @@
-import { ApiEmailField, ApiPasswordField } from '~core/decorators';
+import { ApiEmailField, ApiPasswordField } from '~core/decorators'
 
 export class LoginDto {
   @ApiEmailField({ description: 'User email address for login' })
-  email: string;
+  email: string
 
   @ApiPasswordField({ description: 'User password for authentication' })
-  password: string;
+  password: string
 }

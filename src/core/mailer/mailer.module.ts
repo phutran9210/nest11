@@ -1,18 +1,17 @@
-import { Module } from '@nestjs/common';
-import { MailerModule as NestMailerModule } from '@nestjs-modules/mailer';
-import { ConfigService } from '@nestjs/config';
-import { MailerService } from './mailer.service';
-import { MailerOptions } from '@nestjs-modules/mailer';
+import { Module } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
+import { type MailerOptions, MailerModule as NestMailerModule } from '@nestjs-modules/mailer'
+import { MailerService } from './mailer.service'
 
 @Module({
   imports: [
     NestMailerModule.forRootAsync({
       useFactory: (configService: ConfigService): MailerOptions => {
-        const mailerConfig = configService.get<MailerOptions>('mailer');
+        const mailerConfig = configService.get<MailerOptions>('mailer')
         if (!mailerConfig) {
-          throw new Error('Mailer configuration not found');
+          throw new Error('Mailer configuration not found')
         }
-        return mailerConfig;
+        return mailerConfig
       },
       inject: [ConfigService],
     }),

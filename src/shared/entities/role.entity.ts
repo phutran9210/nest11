@@ -1,54 +1,66 @@
 import {
-  Entity,
-  PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
-  UpdateDateColumn,
-  ManyToMany,
+  Entity,
   JoinTable,
+  ManyToMany,
   OneToMany,
-} from 'typeorm';
-import { PermissionEntity } from './permission.entity';
-import { UserEntity } from './user.entity';
-import { RoleHierarchyEntity } from './role-hierarchy.entity';
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm'
+import { PermissionEntity } from './permission.entity'
+import { RoleHierarchyEntity } from './role-hierarchy.entity'
+import { UserEntity } from './user.entity'
 
 @Entity('roles')
 export class RoleEntity {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id: string
 
   @Column({ unique: true })
-  name: string;
+  name: string
 
   @Column({ nullable: true })
-  description: string;
+  description: string
 
   @Column({ default: 1 })
-  level: number;
+  level: number
 
   @Column({ default: true })
-  isActive: boolean;
+  isActive: boolean
 
-  @ManyToMany(() => PermissionEntity, (permission) => permission.roles)
+  @ManyToMany(
+    () => PermissionEntity,
+    (permission) => permission.roles,
+  )
   @JoinTable({
     name: 'role_permissions',
     joinColumn: { name: 'role_id', referencedColumnName: 'id' },
     inverseJoinColumn: { name: 'permission_id', referencedColumnName: 'id' },
   })
-  permissions: PermissionEntity[];
+  permissions: PermissionEntity[]
 
-  @ManyToMany(() => UserEntity, (user) => user.roles)
-  users: UserEntity[];
+  @ManyToMany(
+    () => UserEntity,
+    (user) => user.roles,
+  )
+  users: UserEntity[]
 
-  @OneToMany(() => RoleHierarchyEntity, (hierarchy) => hierarchy.parentRole)
-  childRoles: RoleHierarchyEntity[];
+  @OneToMany(
+    () => RoleHierarchyEntity,
+    (hierarchy) => hierarchy.parentRole,
+  )
+  childRoles: RoleHierarchyEntity[]
 
-  @OneToMany(() => RoleHierarchyEntity, (hierarchy) => hierarchy.childRole)
-  parentRoles: RoleHierarchyEntity[];
+  @OneToMany(
+    () => RoleHierarchyEntity,
+    (hierarchy) => hierarchy.childRole,
+  )
+  parentRoles: RoleHierarchyEntity[]
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt: Date
 
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt: Date
 }

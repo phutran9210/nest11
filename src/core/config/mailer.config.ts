@@ -1,7 +1,7 @@
-import { registerAs } from '@nestjs/config';
-import { MailerOptions } from '@nestjs-modules/mailer';
-import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
-import * as path from 'path';
+import * as path from 'node:path'
+import { registerAs } from '@nestjs/config'
+import type { MailerOptions } from '@nestjs-modules/mailer'
+import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter'
 
 export default registerAs('mailer', (): MailerOptions => {
   const {
@@ -12,7 +12,7 @@ export default registerAs('mailer', (): MailerOptions => {
     MAIL_FROM,
     MAIL_FROM_NAME,
     MAIL_SECURE,
-  } = process.env;
+  } = process.env
 
   return {
     transport: {
@@ -34,5 +34,5 @@ export default registerAs('mailer', (): MailerOptions => {
         strict: true,
       },
     },
-  };
-});
+  }
+})

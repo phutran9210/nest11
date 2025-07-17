@@ -1,4 +1,4 @@
-import { Entity, PrimaryColumn, Column, CreateDateColumn, UpdateDateColumn, Index } from 'typeorm';
+import { Column, CreateDateColumn, Entity, Index, PrimaryColumn, UpdateDateColumn } from 'typeorm'
 
 export enum IdempotencyStatus {
   PROCESSING = 'processing',
@@ -10,33 +10,33 @@ export enum IdempotencyStatus {
 @Index(['operation', 'createdAt'])
 export class IdempotencyKeyEntity {
   @PrimaryColumn('uuid')
-  key: string;
+  key: string
 
   @Column({ type: 'varchar', length: 100 })
-  operation: string;
+  operation: string
 
   @Column({
     type: 'enum',
     enum: IdempotencyStatus,
     default: IdempotencyStatus.PROCESSING,
   })
-  status: IdempotencyStatus;
+  status: IdempotencyStatus
 
   @Column({ type: 'jsonb', nullable: true })
-  requestData: unknown;
+  requestData: unknown
 
   @Column({ type: 'jsonb', nullable: true })
-  responseData: unknown;
+  responseData: unknown
 
   @Column({ type: 'varchar', length: 500, nullable: true })
-  errorMessage: string;
+  errorMessage: string
 
   @Column({ type: 'varchar', length: 36, nullable: true })
-  resultId: string;
+  resultId: string
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt: Date
 
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt: Date
 }

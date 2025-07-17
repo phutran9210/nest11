@@ -1,18 +1,18 @@
-import { Module } from '@nestjs/common';
-import { TerminusModule } from '@nestjs/terminus';
-import { RedisService } from './redis.service';
-import { RedisHealthIndicator } from './redis-health.service';
-import { RedisHealthController } from './redis-health.controller';
+import { Module } from '@nestjs/common'
+import { TerminusModule } from '@nestjs/terminus'
+import { RedisService } from './redis.service'
+import { RedisHealthController } from './redis-health.controller'
+import { RedisHealthIndicator } from './redis-health.service'
 import {
-  RedisStringService,
   RedisHashService,
+  RedisJsonService,
   RedisListService,
-  RedisSetService,
   RedisLockService,
   RedisPubSubService,
+  RedisSetService,
+  RedisStringService,
   RedisUtilityService,
-  RedisJsonService,
-} from './services';
+} from './services'
 
 @Module({
   imports: [TerminusModule],
@@ -23,56 +23,56 @@ import {
     {
       provide: RedisStringService,
       useFactory: (redisService: RedisService) => {
-        return new RedisStringService(redisService.getClient());
+        return new RedisStringService(redisService.getClient())
       },
       inject: [RedisService],
     },
     {
       provide: RedisHashService,
       useFactory: (redisService: RedisService) => {
-        return new RedisHashService(redisService.getClient());
+        return new RedisHashService(redisService.getClient())
       },
       inject: [RedisService],
     },
     {
       provide: RedisListService,
       useFactory: (redisService: RedisService) => {
-        return new RedisListService(redisService.getClient());
+        return new RedisListService(redisService.getClient())
       },
       inject: [RedisService],
     },
     {
       provide: RedisSetService,
       useFactory: (redisService: RedisService) => {
-        return new RedisSetService(redisService.getClient());
+        return new RedisSetService(redisService.getClient())
       },
       inject: [RedisService],
     },
     {
       provide: RedisLockService,
       useFactory: (redisService: RedisService) => {
-        return new RedisLockService(redisService);
+        return new RedisLockService(redisService)
       },
       inject: [RedisService],
     },
     {
       provide: RedisPubSubService,
       useFactory: (redisService: RedisService) => {
-        return new RedisPubSubService(redisService.getClient());
+        return new RedisPubSubService(redisService.getClient())
       },
       inject: [RedisService],
     },
     {
       provide: RedisUtilityService,
       useFactory: (redisService: RedisService) => {
-        return new RedisUtilityService(redisService.getClient());
+        return new RedisUtilityService(redisService.getClient())
       },
       inject: [RedisService],
     },
     {
       provide: RedisJsonService,
       useFactory: (redisService: RedisService) => {
-        return new RedisJsonService(redisService.getClient());
+        return new RedisJsonService(redisService.getClient())
       },
       inject: [RedisService],
     },

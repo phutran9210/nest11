@@ -1,5 +1,5 @@
-import { DocumentBuilder, SwaggerModule, OpenAPIObject } from '@nestjs/swagger';
-import { INestApplication } from '@nestjs/common';
+import type { INestApplication } from '@nestjs/common'
+import { DocumentBuilder, type OpenAPIObject, SwaggerModule } from '@nestjs/swagger'
 
 export const createSwaggerConfig = (): Omit<OpenAPIObject, 'paths'> => {
   return new DocumentBuilder()
@@ -31,11 +31,11 @@ export const createSwaggerConfig = (): Omit<OpenAPIObject, 'paths'> => {
     )
     .addTag('users')
     .addBearerAuth()
-    .build();
-};
+    .build()
+}
 
 export const setupSwagger = (app: INestApplication): void => {
-  const config = createSwaggerConfig();
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
-};
+  const config = createSwaggerConfig()
+  const document = SwaggerModule.createDocument(app, config)
+  SwaggerModule.setup('api', app, document)
+}

@@ -1,7 +1,7 @@
-import { MigrationInterface, QueryRunner, Table, TableIndex } from 'typeorm';
+import { type MigrationInterface, type QueryRunner, Table, TableIndex } from 'typeorm'
 
 export class CreateUserTableMigration1640000000000 implements MigrationInterface {
-  name = 'CreateUserTable1640000000000';
+  name = 'CreateUserTable1640000000000'
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
@@ -56,7 +56,7 @@ export class CreateUserTableMigration1640000000000 implements MigrationInterface
         ],
       }),
       true,
-    );
+    )
 
     // Create indexes for better performance
     await queryRunner.createIndex(
@@ -65,7 +65,7 @@ export class CreateUserTableMigration1640000000000 implements MigrationInterface
         name: 'IDX_USER_EMAIL',
         columnNames: ['email'],
       }),
-    );
+    )
 
     await queryRunner.createIndex(
       'users',
@@ -73,7 +73,7 @@ export class CreateUserTableMigration1640000000000 implements MigrationInterface
         name: 'IDX_USER_IS_ACTIVE',
         columnNames: ['is_active'],
       }),
-    );
+    )
 
     await queryRunner.createIndex(
       'users',
@@ -81,13 +81,13 @@ export class CreateUserTableMigration1640000000000 implements MigrationInterface
         name: 'IDX_USER_CREATED_AT',
         columnNames: ['created_at'],
       }),
-    );
+    )
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropIndex('users', 'IDX_USER_CREATED_AT');
-    await queryRunner.dropIndex('users', 'IDX_USER_IS_ACTIVE');
-    await queryRunner.dropIndex('users', 'IDX_USER_EMAIL');
-    await queryRunner.dropTable('users');
+    await queryRunner.dropIndex('users', 'IDX_USER_CREATED_AT')
+    await queryRunner.dropIndex('users', 'IDX_USER_IS_ACTIVE')
+    await queryRunner.dropIndex('users', 'IDX_USER_EMAIL')
+    await queryRunner.dropTable('users')
   }
 }

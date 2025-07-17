@@ -1,33 +1,33 @@
-import { TypeOrmModuleOptions } from '@nestjs/typeorm';
-import { ConfigService } from '@nestjs/config';
+import type { ConfigService } from '@nestjs/config'
+import type { TypeOrmModuleOptions } from '@nestjs/typeorm'
 
 export interface IDatabaseConfig {
-  type: 'postgres';
-  host: string;
-  port: number;
-  username: string;
-  password: string;
-  database: string;
-  synchronize: boolean;
-  logging: boolean | 'all' | Array<'query' | 'error' | 'schema' | 'warn' | 'info' | 'log'>;
-  ssl: boolean | { rejectUnauthorized: boolean };
-  entities: string[];
-  migrations: string[];
-  migrationsRun: boolean;
-  dropSchema: boolean;
-  maxQueryExecutionTime: number;
+  type: 'postgres'
+  host: string
+  port: number
+  username: string
+  password: string
+  database: string
+  synchronize: boolean
+  logging: boolean | 'all' | Array<'query' | 'error' | 'schema' | 'warn' | 'info' | 'log'>
+  ssl: boolean | { rejectUnauthorized: boolean }
+  entities: string[]
+  migrations: string[]
+  migrationsRun: boolean
+  dropSchema: boolean
+  maxQueryExecutionTime: number
   extra: {
-    max: number;
-    min: number;
-    acquire: number;
-    idle: number;
-  };
+    max: number
+    min: number
+    acquire: number
+    idle: number
+  }
 }
 
 export const getDatabaseConfig = (configService: ConfigService): TypeOrmModuleOptions => {
-  const nodeEnv = configService.get<string>('NODE_ENV', 'development');
-  const isProduction = nodeEnv === 'production';
-  const isTest = nodeEnv === 'test';
+  const nodeEnv = configService.get<string>('NODE_ENV', 'development')
+  const isProduction = nodeEnv === 'production'
+  const isTest = nodeEnv === 'test'
 
   // SAFETY: Always use explicit false defaults to prevent data loss
 
@@ -68,17 +68,17 @@ export const getDatabaseConfig = (configService: ConfigService): TypeOrmModuleOp
       acquire: configService.get<number>('DB_POOL_ACQUIRE', 60000),
       idle: configService.get<number>('DB_POOL_IDLE', 10000),
     },
-  };
+  }
 
   // Validate required environment variables in production
   if (isProduction) {
-    const requiredVars = ['DB_HOST', 'DB_PORT', 'DB_USERNAME', 'DB_PASSWORD', 'DB_NAME'];
-    const missingVars = requiredVars.filter((varName) => !configService.get(varName));
+    const requiredVars = ['DB_HOST', 'DB_PORT', 'DB_USERNAME', 'DB_PASSWORD', 'DB_NAME']
+    const missingVars = requiredVars.filter((varName) => !configService.get(varName))
 
     if (missingVars.length > 0) {
-      throw new Error(`Missing required database environment variables: ${missingVars.join(', ')}`);
+      throw new Error(`Missing required database environment variables: ${missingVars.join(', ')}`)
     }
   }
 
-  return config;
-};
+  return config
+}

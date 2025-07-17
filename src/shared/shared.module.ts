@@ -1,12 +1,11 @@
-import { Module, Global } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { EnvironmentService, IdempotencyService } from './services';
-import { IdempotencyKeyEntity } from './entities/idempotency-key.entity';
+import { Global, Module } from '@nestjs/common'
+import { TypeOrmModule } from '@nestjs/typeorm'
+import { IdempotencyKeyEntity } from './entities/idempotency-key.entity'
+import { EnvironmentService, IdempotencyService } from './services'
 
 @Global()
 @Module({
-  imports: [ConfigModule, TypeOrmModule.forFeature([IdempotencyKeyEntity])],
+  imports: [TypeOrmModule.forFeature([IdempotencyKeyEntity])],
   providers: [EnvironmentService, IdempotencyService],
   exports: [EnvironmentService, IdempotencyService],
 })

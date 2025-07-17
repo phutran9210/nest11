@@ -1,11 +1,11 @@
-import { createParamDecorator, ExecutionContext } from '@nestjs/common';
-import { Request } from 'express';
+import { createParamDecorator, type ExecutionContext } from '@nestjs/common'
+import type { Request } from 'express'
 
 /**
  * Get client IP address from request
  */
-export const ClientIp = createParamDecorator((data: unknown, ctx: ExecutionContext): string => {
-  const request = ctx.switchToHttp().getRequest<Request>();
+export const ClientIp = createParamDecorator((_data: unknown, ctx: ExecutionContext): string => {
+  const request = ctx.switchToHttp().getRequest<Request>()
 
   // Check for IP from various headers (proxy, load balancer, etc.)
   return (
@@ -17,13 +17,13 @@ export const ClientIp = createParamDecorator((data: unknown, ctx: ExecutionConte
     (request.headers['x-client-ip'] as string) ||
     (request.headers['cf-connecting-ip'] as string) || // Cloudflare
     'unknown'
-  );
-});
+  )
+})
 
 /**
  * Get user agent from request
  */
-export const UserAgent = createParamDecorator((data: unknown, ctx: ExecutionContext): string => {
-  const request = ctx.switchToHttp().getRequest<Request>();
-  return request.headers['user-agent'] || 'unknown';
-});
+export const UserAgent = createParamDecorator((_data: unknown, ctx: ExecutionContext): string => {
+  const request = ctx.switchToHttp().getRequest<Request>()
+  return request.headers['user-agent'] || 'unknown'
+})

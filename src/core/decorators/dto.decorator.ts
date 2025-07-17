@@ -1,28 +1,28 @@
-import { applyDecorators } from '@nestjs/common';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { applyDecorators } from '@nestjs/common'
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import {
+  IsBoolean,
   IsEmail,
   IsNotEmpty,
-  IsString,
-  MinLength,
-  IsStrongPassword,
   IsOptional,
-  IsBoolean,
-  ValidationOptions,
-} from 'class-validator';
-import { MESSAGES } from '../constant';
+  IsString,
+  IsStrongPassword,
+  MinLength,
+  type ValidationOptions,
+} from 'class-validator'
+import { MESSAGES } from '../constant'
 
 interface FieldConfig {
-  example: unknown;
-  description: string;
-  validators: ((validationOptions?: ValidationOptions) => PropertyDecorator)[];
-  additionalConfig?: Record<string, unknown>;
+  example: unknown
+  description: string
+  validators: ((validationOptions?: ValidationOptions) => PropertyDecorator)[]
+  additionalConfig?: Record<string, unknown>
 }
 
 interface FieldOptions {
-  required?: boolean;
-  description?: string;
-  example?: unknown;
+  required?: boolean
+  description?: string
+  example?: unknown
 }
 
 const FIELD_CONFIGS: Record<string, FieldConfig> = {
@@ -68,17 +68,17 @@ const FIELD_CONFIGS: Record<string, FieldConfig> = {
     description: 'Unique identifier',
     validators: [],
   },
-};
+}
 
 const createFieldDecorator = (fieldType: string, options: FieldOptions = {}) => {
-  const config = FIELD_CONFIGS[fieldType];
+  const config = FIELD_CONFIGS[fieldType]
   if (!config) {
-    throw new Error(`Unknown field type: ${fieldType}`);
+    throw new Error(`Unknown field type: ${fieldType}`)
   }
 
-  const decorators: PropertyDecorator[] = [];
-  const isRequired = options.required !== false;
-  const ApiPropertyDecorator = isRequired ? ApiProperty : ApiPropertyOptional;
+  const decorators: PropertyDecorator[] = []
+  const isRequired = options.required !== false
+  const ApiPropertyDecorator = isRequired ? ApiProperty : ApiPropertyOptional
 
   decorators.push(
     ApiPropertyDecorator({
@@ -86,42 +86,42 @@ const createFieldDecorator = (fieldType: string, options: FieldOptions = {}) => 
       description: options.description || config.description,
       ...config.additionalConfig,
     }),
-  );
+  )
 
   config.validators.forEach((validator) => {
-    decorators.push(validator());
-  });
+    decorators.push(validator())
+  })
 
   if (isRequired) {
-    decorators.push(IsNotEmpty({ message: MESSAGES.VALIDATION.REQUIRED }));
+    decorators.push(IsNotEmpty({ message: MESSAGES.VALIDATION.REQUIRED }))
   } else {
-    decorators.push(IsOptional());
+    decorators.push(IsOptional())
   }
 
-  return applyDecorators(...decorators);
-};
+  return applyDecorators(...decorators)
+}
 
-export const ApiEmailField = (options: FieldOptions = {}) => createFieldDecorator('email', options);
+export const ApiEmailField = (options: FieldOptions = {}) => createFieldDecorator('email', options)
 
 export const ApiOptionalEmailField = (options: Omit<FieldOptions, 'required'> = {}) =>
-  createFieldDecorator('email', { ...options, required: false });
+  createFieldDecorator('email', { ...options, required: false })
 
-export const ApiNameField = (options: FieldOptions = {}) => createFieldDecorator('name', options);
+export const ApiNameField = (options: FieldOptions = {}) => createFieldDecorator('name', options)
 
 export const ApiOptionalNameField = (options: Omit<FieldOptions, 'required'> = {}) =>
-  createFieldDecorator('name', { ...options, required: false });
+  createFieldDecorator('name', { ...options, required: false })
 
 export const ApiPasswordField = (options: FieldOptions = {}) =>
-  createFieldDecorator('password', options);
+  createFieldDecorator('password', options)
 
 export const ApiOptionalPasswordField = (options: Omit<FieldOptions, 'required'> = {}) =>
-  createFieldDecorator('password', { ...options, required: false });
+  createFieldDecorator('password', { ...options, required: false })
 
 export const ApiBooleanField = (options: FieldOptions = {}) =>
-  createFieldDecorator('boolean', options);
+  createFieldDecorator('boolean', options)
 
 export const ApiOptionalBooleanField = (options: Omit<FieldOptions, 'required'> = {}) =>
-  createFieldDecorator('boolean', { ...options, required: false });
+  createFieldDecorator('boolean', { ...options, required: false })
 
 export const ApiIdField = (options: Omit<FieldOptions, 'required'> = {}) =>
-  createFieldDecorator('id', { ...options, required: true });
+  createFieldDecorator('id', { ...options, required: true })

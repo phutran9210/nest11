@@ -1,12 +1,12 @@
 import {
-  Entity,
-  PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
-  UpdateDateColumn,
+  Entity,
   ManyToMany,
-} from 'typeorm';
-import { RoleEntity } from './role.entity';
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm'
+import { RoleEntity } from './role.entity'
 
 export enum PermissionAction {
   CREATE = 'create',
@@ -14,6 +14,7 @@ export enum PermissionAction {
   UPDATE = 'update',
   DELETE = 'delete',
   MANAGE = 'manage',
+  WEBSOCKET = 'websocket',
 }
 
 export enum PermissionResource {
@@ -21,41 +22,45 @@ export enum PermissionResource {
   ROLE = 'role',
   PERMISSION = 'permission',
   SYSTEM = 'system',
+  WEBSOCKET = 'websocket',
   ALL = 'all',
 }
 
 @Entity('permissions')
 export class PermissionEntity {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id: string
 
   @Column({ unique: true })
-  name: string;
+  name: string
 
   @Column({
     type: 'enum',
     enum: PermissionAction,
   })
-  action: PermissionAction;
+  action: PermissionAction
 
   @Column({
     type: 'enum',
     enum: PermissionResource,
   })
-  resource: PermissionResource;
+  resource: PermissionResource
 
   @Column({ nullable: true })
-  description: string;
+  description: string
 
   @Column({ default: true })
-  isActive: boolean;
+  isActive: boolean
 
-  @ManyToMany(() => RoleEntity, (role) => role.permissions)
-  roles: RoleEntity[];
+  @ManyToMany(
+    () => RoleEntity,
+    (role) => role.permissions,
+  )
+  roles: RoleEntity[]
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt: Date
 
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt: Date
 }

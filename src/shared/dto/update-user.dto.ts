@@ -1,20 +1,20 @@
 import {
+  ApiOptionalBooleanField,
   ApiOptionalEmailField,
   ApiOptionalNameField,
   ApiOptionalPasswordField,
-  ApiOptionalBooleanField,
-} from '~/core/decorators';
+} from '~/core/decorators'
 
 export class UpdateUserDto {
   @ApiOptionalEmailField()
-  email?: string;
+  email?: string
 
   @ApiOptionalNameField()
-  name?: string;
+  name?: string
 
   @ApiOptionalPasswordField()
-  password?: string;
+  password?: string
 
   @ApiOptionalBooleanField({ description: 'User active status' })
-  isActive?: boolean;
+  isActive?: boolean
 }

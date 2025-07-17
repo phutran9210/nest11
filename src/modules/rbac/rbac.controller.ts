@@ -1,29 +1,29 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Param,
+  Controller,
   Delete,
-  UseGuards,
+  Get,
+  Param,
   ParseUUIDPipe,
-} from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
-import { HierarchicalRoleService } from './hierarchical-role.service';
-import { HierarchicalGuard } from '~core/guards/hierarchical.guard';
-import { RequirePermission, RequireRole, CurrentUser } from '~core/decorators/auth';
-import { PermissionAction, PermissionResource } from '~shared/entities/permission.entity';
-import { AuthUserDto } from '~shared/dto/auth';
+  Post,
+  UseGuards,
+} from '@nestjs/common'
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
+import { CurrentUser, RequirePermission, RequireRole } from '~core/decorators/auth'
+import { HierarchicalGuard } from '~core/guards/hierarchical.guard'
+import type { AuthUserDto } from '~shared/dto/auth'
+import { PermissionAction, PermissionResource } from '~shared/entities/permission.entity'
+import type { HierarchicalRoleService } from './hierarchical-role.service'
 
 @ApiTags('RBAC')
 @Controller('rbac')
 @ApiBearerAuth()
 @UseGuards(HierarchicalGuard)
 export class RbacController {
-  private readonly hierarchicalRoleService: HierarchicalRoleService;
+  private readonly hierarchicalRoleService: HierarchicalRoleService
 
   constructor(hierarchicalRoleService: HierarchicalRoleService) {
-    this.hierarchicalRoleService = hierarchicalRoleService;
+    this.hierarchicalRoleService = hierarchicalRoleService
   }
 
   @Get('user/:userId/permissions')
@@ -31,14 +31,14 @@ export class RbacController {
   @ApiOperation({ summary: 'Get user permissions and roles' })
   @ApiResponse({ status: 200, description: 'User permissions retrieved successfully' })
   async getUserPermissions(@Param('userId', ParseUUIDPipe) userId: string) {
-    return this.hierarchicalRoleService.getUserPermissions(userId);
+    return this.hierarchicalRoleService.getUserPermissions(userId)
   }
 
   @Get('my-permissions')
   @ApiOperation({ summary: 'Get current user permissions and roles' })
   @ApiResponse({ status: 200, description: 'Current user permissions retrieved successfully' })
   async getMyPermissions(@CurrentUser() user: AuthUserDto) {
-    return this.hierarchicalRoleService.getUserPermissions(user.id);
+    return this.hierarchicalRoleService.getUserPermissions(user.id)
   }
 
   @Post('role-hierarchy')
@@ -46,7 +46,7 @@ export class RbacController {
   @ApiOperation({ summary: 'Create role hierarchy relationship' })
   @ApiResponse({ status: 201, description: 'Role hierarchy created successfully' })
   async createRoleHierarchy(@Body() body: { parentRoleId: string; childRoleId: string }) {
-    return this.hierarchicalRoleService.createRoleHierarchy(body.parentRoleId, body.childRoleId);
+    return this.hierarchicalRoleService.createRoleHierarchy(body.parentRoleId, body.childRoleId)
   }
 
   @Delete('role-hierarchy/:parentRoleId/:childRoleId')
@@ -57,8 +57,8 @@ export class RbacController {
     @Param('parentRoleId', ParseUUIDPipe) parentRoleId: string,
     @Param('childRoleId', ParseUUIDPipe) childRoleId: string,
   ) {
-    await this.hierarchicalRoleService.removeRoleHierarchy(parentRoleId, childRoleId);
-    return { message: 'Role hierarchy removed successfully' };
+    await this.hierarchicalRoleService.removeRoleHierarchy(parentRoleId, childRoleId)
+    return { message: 'Role hierarchy removed successfully' }
   }
 
   @Get('role/:roleId/hierarchy')
@@ -66,7 +66,7 @@ export class RbacController {
   @ApiOperation({ summary: 'Get role hierarchy information' })
   @ApiResponse({ status: 200, description: 'Role hierarchy retrieved successfully' })
   async getRoleHierarchy(@Param('roleId', ParseUUIDPipe) roleId: string) {
-    return this.hierarchicalRoleService.getRoleHierarchy(roleId);
+    return this.hierarchicalRoleService.getRoleHierarchy(roleId)
   }
 
   @Get('admin-only')
@@ -74,7 +74,7 @@ export class RbacController {
   @ApiOperation({ summary: 'Admin only endpoint example' })
   @ApiResponse({ status: 200, description: 'Admin access granted' })
   adminOnly() {
-    return { message: 'This endpoint is only accessible by Admins' };
+    return { message: 'This endpoint is only accessible by Admins' }
   }
 
   @Get('manager-and-above')
@@ -82,6 +82,6 @@ export class RbacController {
   @ApiOperation({ summary: 'Manager and above endpoint example' })
   @ApiResponse({ status: 200, description: 'Manager access granted' })
   managerAndAbove() {
-    return { message: 'This endpoint is accessible by Managers and their parent roles' };
+    return { message: 'This endpoint is accessible by Managers and their parent roles' }
   }
 }

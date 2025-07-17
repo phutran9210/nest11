@@ -1,44 +1,44 @@
-import { DataSource, DataSourceOptions } from 'typeorm';
-import { ConfigService } from '@nestjs/config';
-import { config } from 'dotenv';
-import { getDatabaseConfig } from '../../config/database.config';
-import { UserSeederService } from './user.seed';
-import { seedRbacData } from './rbac.seed';
+import { ConfigService } from '@nestjs/config'
+import { config } from 'dotenv'
+import { DataSource, type DataSourceOptions } from 'typeorm'
+import { getDatabaseConfig } from '../../config/database.config'
+import { seedRbacData } from './rbac.seed'
+import { runUserSeeder } from './user.seed'
 
 // Load environment variables
 
-config();
+config()
 
 async function runSeeds() {
-  const configService = new ConfigService();
-  const dbConfig = getDatabaseConfig(configService);
+  const configService = new ConfigService()
+  const dbConfig = getDatabaseConfig(configService)
 
   const dataSource = new DataSource({
     ...dbConfig,
     entities: ['src/**/*.entity{.ts,.js}'],
-  } as DataSourceOptions);
+  } as DataSourceOptions)
 
   try {
-    await dataSource.initialize();
-    console.log('Database connection established');
+    await dataSource.initialize()
+    console.log('Database connection established')
 
     // Run seeders
-    console.log('Starting seed process...');
+    console.log('Starting seed process...')
 
-    await seedRbacData(dataSource);
-    await UserSeederService.run(dataSource);
+    await seedRbacData(dataSource)
+    await runUserSeeder(dataSource)
 
-    console.log('All seeds completed successfully!');
+    console.log('All seeds completed successfully!')
   } catch (error) {
-    console.error('Error during seeding:', error);
-    process.exit(1);
+    console.error('Error during seeding:', error)
+    process.exit(1)
   } finally {
-    await dataSource.destroy();
-    console.log('Database connection closed');
+    await dataSource.destroy()
+    console.log('Database connection closed')
   }
 }
 
 // Run seeds if this file is executed directly
 if (require.main === module) {
-  void runSeeds();
+  void runSeeds()
 }

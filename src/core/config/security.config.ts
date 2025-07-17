@@ -1,38 +1,38 @@
-import { INestApplication } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import helmet from 'helmet';
+import type { INestApplication } from '@nestjs/common'
+import type { ConfigService } from '@nestjs/config'
+import helmet from 'helmet'
 
 export interface SecurityConfig {
   helmet: {
-    enabled: boolean;
-    contentSecurityPolicy: boolean;
-    crossOriginResourcePolicy: string;
-    crossOriginOpenerPolicy: string;
-    crossOriginEmbedderPolicy: boolean;
-    originAgentCluster: boolean;
-    referrerPolicy: string;
-    strictTransportSecurity: boolean;
-    xContentTypeOptions: boolean;
-    xDnsPrefetchControl: boolean;
-    xDownloadOptions: boolean;
-    xFrameOptions: string;
-    xPermittedCrossDomainPolicies: boolean;
-    xPoweredBy: boolean;
-    xXssProtection: boolean;
-  };
-  trustProxy: boolean;
+    enabled: boolean
+    contentSecurityPolicy: boolean
+    crossOriginResourcePolicy: string
+    crossOriginOpenerPolicy: string
+    crossOriginEmbedderPolicy: boolean
+    originAgentCluster: boolean
+    referrerPolicy: string
+    strictTransportSecurity: boolean
+    xContentTypeOptions: boolean
+    xDnsPrefetchControl: boolean
+    xDownloadOptions: boolean
+    xFrameOptions: string
+    xPermittedCrossDomainPolicies: boolean
+    xPoweredBy: boolean
+    xXssProtection: boolean
+  }
+  trustProxy: boolean
   rateLimiting: {
-    enabled: boolean;
-    windowMs: number;
-    max: number;
-    skipSuccessfulRequests: boolean;
-    skipFailedRequests: boolean;
-  };
+    enabled: boolean
+    windowMs: number
+    max: number
+    skipSuccessfulRequests: boolean
+    skipFailedRequests: boolean
+  }
 }
 
 export const createSecurityConfig = (configService: ConfigService): SecurityConfig => {
-  const environment = configService.get<string>('NODE_ENV', 'development');
-  const isProd = environment === 'production';
+  const environment = configService.get<string>('NODE_ENV', 'development')
+  const isProd = environment === 'production'
 
   return {
     helmet: {
@@ -69,11 +69,11 @@ export const createSecurityConfig = (configService: ConfigService): SecurityConf
       ),
       skipFailedRequests: configService.get<boolean>('SECURITY_RATE_LIMITING_SKIP_FAILED', false),
     },
-  };
-};
+  }
+}
 
 export const setupSecurity = (app: INestApplication, configService: ConfigService): void => {
-  const securityConfig = createSecurityConfig(configService);
+  const securityConfig = createSecurityConfig(configService)
 
   if (securityConfig.helmet.enabled) {
     app.use(
@@ -144,13 +144,13 @@ export const setupSecurity = (app: INestApplication, configService: ConfigServic
         xPoweredBy: securityConfig.helmet.xPoweredBy,
         xXssProtection: securityConfig.helmet.xXssProtection,
       }),
-    );
+    )
   }
 
   if (securityConfig.trustProxy) {
-    (app.getHttpAdapter().getInstance() as { set: (key: string, value: number) => void }).set(
+    ;(app.getHttpAdapter().getInstance() as { set: (key: string, value: number) => void }).set(
       'trust proxy',
       1,
-    );
+    )
   }
-};
+}

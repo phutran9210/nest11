@@ -1,12 +1,12 @@
-import { ApiEmailField, ApiNameField, ApiPasswordField } from '~/core/decorators';
+import { ApiEmailField, ApiNameField, ApiPasswordField } from '~/core/decorators'
 
 export class CreateUserDto {
   @ApiEmailField()
-  email: string;
+  email: string
 
   @ApiNameField()
-  name: string;
+  name: string
 
   @ApiPasswordField()
-  password: string;
+  password: string
 }

@@ -1,6 +1,6 @@
-import { CacheModuleOptions } from '@nestjs/cache-manager';
-import { redisStore } from 'cache-manager-ioredis';
-import { RedisOptions } from 'ioredis';
+import type { CacheModuleOptions } from '@nestjs/cache-manager'
+import { redisStore } from 'cache-manager-ioredis'
+import type { RedisOptions } from 'ioredis'
 
 export const redisConnectionConfig: RedisOptions = {
   host: process.env.REDIS_HOST || 'localhost',
@@ -23,11 +23,11 @@ export const redisConnectionConfig: RedisOptions = {
 
   // Cluster support (if needed)
   enableReadyCheck: true,
-};
+}
 
 export const redisConfig = (): CacheModuleOptions => ({
   store: redisStore,
   ttl: parseInt(process.env.CACHE_TTL || '300', 10) * 1000, // Convert to milliseconds
   max: parseInt(process.env.CACHE_MAX || '1000', 10),
   ...redisConnectionConfig,
-});
+})

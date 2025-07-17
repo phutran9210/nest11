@@ -1,5 +1,5 @@
-import { Module } from '@nestjs/common';
-import { LifecycleService } from './lifecycle.service';
+import { Module } from '@nestjs/common'
+import { LifecycleService } from './lifecycle.service'
 
 @Module({
   providers: [LifecycleService],

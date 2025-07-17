@@ -1,28 +1,33 @@
-import { Injectable, Logger, OnModuleDestroy, BeforeApplicationShutdown } from '@nestjs/common';
+import {
+  type BeforeApplicationShutdown,
+  Injectable,
+  Logger,
+  type OnModuleDestroy,
+} from '@nestjs/common'
 
 @Injectable()
 export class LifecycleService implements OnModuleDestroy, BeforeApplicationShutdown {
-  private readonly logger = new Logger(LifecycleService.name);
-  private shutdownInProgress = false;
+  private readonly logger = new Logger(LifecycleService.name)
+  private shutdownInProgress = false
 
   beforeApplicationShutdown(signal?: string) {
-    if (this.shutdownInProgress) return;
+    if (this.shutdownInProgress) return
 
-    this.shutdownInProgress = true;
-    this.logger.log(`🔄 Application shutdown initiated${signal ? ` by signal: ${signal}` : ''}`);
+    this.shutdownInProgress = true
+    this.logger.log(`🔄 Application shutdown initiated${signal ? ` by signal: ${signal}` : ''}`)
   }
 
   async onModuleDestroy() {
     if (!this.shutdownInProgress) {
-      this.beforeApplicationShutdown();
+      this.beforeApplicationShutdown()
     }
 
-    this.logger.log('🔄 Starting graceful shutdown sequence...');
+    this.logger.log('🔄 Starting graceful shutdown sequence...')
 
     // Add any custom cleanup logic here
-    await this.performCustomCleanup();
+    await this.performCustomCleanup()
 
-    this.logger.log('✅ Lifecycle service cleanup completed');
+    this.logger.log('✅ Lifecycle service cleanup completed')
   }
 
   private async performCustomCleanup(): Promise<void> {
@@ -30,14 +35,14 @@ export class LifecycleService implements OnModuleDestroy, BeforeApplicationShutd
       // Add any application-specific cleanup tasks here
 
       // Example: Clear intervals, timeouts, etc.
-      this.clearAllIntervals();
+      this.clearAllIntervals()
 
       // Example: Flush any pending operations
-      await this.flushPendingOperations();
+      await this.flushPendingOperations()
 
-      this.logger.log('✅ Custom cleanup tasks completed');
+      this.logger.log('✅ Custom cleanup tasks completed')
     } catch (error) {
-      this.logger.error('❌ Error during custom cleanup:', error);
+      this.logger.error('❌ Error during custom cleanup:', error)
     }
   }
 
@@ -49,11 +54,11 @@ export class LifecycleService implements OnModuleDestroy, BeforeApplicationShutd
   private async flushPendingOperations(): Promise<void> {
     // Flush any pending async operations
     // This is just an example - implement based on your needs
-    await new Promise((resolve) => setTimeout(resolve, 100));
+    await new Promise((resolve) => setTimeout(resolve, 100))
   }
 
   // Utility method to check if shutdown is in progress
   isShuttingDown(): boolean {
-    return this.shutdownInProgress;
+    return this.shutdownInProgress
   }
 }
