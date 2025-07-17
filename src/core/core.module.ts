@@ -1,10 +1,10 @@
 import { Global, Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
+import { CorsService } from '~core/config'
 import { DatabaseModule } from '~core/database/database.module'
 import { LifecycleModule } from '~core/lifecycle'
-import { CorsService } from '~core/config'
-import { LoggerModule } from './logger/logger.module'
 import { MailerModule } from '~core/mailer'
+import { LoggerModule } from './logger/logger.module'
 import { SecurityModule } from './security/security.module'
 
 @Global()
