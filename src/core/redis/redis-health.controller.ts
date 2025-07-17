@@ -2,7 +2,7 @@ import { Controller, Get } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 import { HealthCheck, HealthCheckService } from '@nestjs/terminus'
 import { ApiSuccessResponse } from '~/core/decorators'
-import type { RedisHealthIndicator } from './redis-health.service'
+import { RedisHealthIndicator } from './redis-health.service'
 
 @ApiTags('health')
 @Controller('health')

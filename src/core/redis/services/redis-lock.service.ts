@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import type { RedisService } from '../redis.service'
+import { RedisService } from '~core/redis'
 
 export interface LockOptions {
   ttl?: number // TTL in seconds, default 30

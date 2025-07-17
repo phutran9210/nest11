@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import type { CustomLoggerService } from '~core/logger/logger.service'
+import { CustomLoggerService } from '~core/logger/logger.service'
 
 export interface IHealthCheckResponse {
   status: string
@@ -11,11 +11,7 @@ export interface IHealthCheckResponse {
 
 @Injectable()
 export class AppService {
-  private readonly logger: CustomLoggerService
-
-  constructor(logger: CustomLoggerService) {
-    this.logger = logger
-  }
+  constructor(private readonly logger: CustomLoggerService) {}
 
   checkHealth(): IHealthCheckResponse {
     this.logger.info('Health check requested')

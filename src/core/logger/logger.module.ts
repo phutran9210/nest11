@@ -1,6 +1,6 @@
 import { Global, Module } from '@nestjs/common'
 import { WinstonModule } from 'nest-winston'
-import type * as winston from 'winston'
+import * as winston from 'winston'
 import { loggerConfig } from '~core/config'
 import { CustomLoggerService } from './logger.service'
 

@@ -17,23 +17,16 @@ export interface JwtPayload {
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  private readonly userService: UserService
-  private readonly environmentService: EnvironmentService
-  private readonly jwtBlacklistService: JwtBlacklistService
-
   constructor(
-    userService: UserService,
-    environmentService: EnvironmentService,
-    jwtBlacklistService: JwtBlacklistService,
+    private readonly userService: UserService,
+    private readonly environmentService: EnvironmentService,
+    private readonly jwtBlacklistService: JwtBlacklistService,
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
       secretOrKey: environmentService.security.jwtSecret,
     })
-    this.userService = userService
-    this.environmentService = environmentService
-    this.jwtBlacklistService = jwtBlacklistService
   }
 
   async validate(payload: JwtPayload): Promise<UserEntity> {

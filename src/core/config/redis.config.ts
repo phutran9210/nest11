@@ -1,6 +1,6 @@
-import type { CacheModuleOptions } from '@nestjs/cache-manager'
+import { CacheModuleOptions } from '@nestjs/cache-manager'
 import { redisStore } from 'cache-manager-ioredis'
-import type { RedisOptions } from 'ioredis'
+import { RedisOptions } from 'ioredis'
 
 export const redisConnectionConfig: RedisOptions = {
   host: process.env.REDIS_HOST || 'localhost',

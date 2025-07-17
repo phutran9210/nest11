@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common'
-import type { RedisService } from '~core/redis'
+import { RedisService } from '~core/redis'
 
 export interface RateLimitConfig {
   maxAttempts: number
@@ -18,11 +18,8 @@ export interface RateLimitResult {
 @Injectable()
 export class RateLimitService {
   private readonly logger = new Logger(RateLimitService.name)
-  private readonly redisService: RedisService
 
-  constructor(redisService: RedisService) {
-    this.redisService = redisService
-  }
+  constructor(private readonly redisService: RedisService) {}
 
   /**
    * Check and increment rate limit for a given key

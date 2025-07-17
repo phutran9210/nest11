@@ -3,16 +3,13 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { RequirePermission } from '~/core/decorators'
 import { JwtAuthGuard } from '~/core/guards'
 import { PermissionAction, PermissionResource } from '~/shared/entities/permission.entity'
-import type { AppWebSocketGateway, ConnectionStats } from './websocket.gateway'
+import { AppWebSocketGateway, ConnectionStats } from './websocket.gateway'
 
 @ApiTags('WebSocket Management')
 @Controller('websocket')
 @UseGuards(JwtAuthGuard)
 export class WebSocketController {
-  private readonly wsGateway: AppWebSocketGateway
-  constructor(wsGateway: AppWebSocketGateway) {
-    this.wsGateway = wsGateway
-  }
+  constructor(private readonly wsGateway: AppWebSocketGateway) {}
 
   @Get('health')
   @ApiOperation({ summary: 'Get WebSocket server health status' })

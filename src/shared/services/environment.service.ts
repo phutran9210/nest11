@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import type { ConfigService } from '@nestjs/config'
+import { ConfigService } from '@nestjs/config'
 
 export interface AppConfig {
   port: number
@@ -58,11 +58,7 @@ export interface EnvironmentVariables {
 
 @Injectable()
 export class EnvironmentService {
-  private readonly configService: ConfigService
-
-  constructor(configService: ConfigService) {
-    this.configService = configService
-  }
+  constructor(private readonly configService: ConfigService) {}
 
   get app(): AppConfig {
     return {

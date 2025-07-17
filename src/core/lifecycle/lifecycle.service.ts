@@ -1,9 +1,4 @@
-import {
-  type BeforeApplicationShutdown,
-  Injectable,
-  Logger,
-  type OnModuleDestroy,
-} from '@nestjs/common'
+import { BeforeApplicationShutdown, Injectable, Logger, OnModuleDestroy } from '@nestjs/common'
 
 @Injectable()
 export class LifecycleService implements OnModuleDestroy, BeforeApplicationShutdown {

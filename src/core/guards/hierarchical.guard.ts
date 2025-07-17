@@ -1,13 +1,8 @@
-import {
-  type CanActivate,
-  type ExecutionContext,
-  ForbiddenException,
-  Injectable,
-} from '@nestjs/common'
-import type { Reflector } from '@nestjs/core'
-import type { CustomLoggerService } from '~core/logger/logger.service'
-import type { HierarchicalRoleService } from '~modules/rbac/hierarchical-role.service'
-import type { PermissionAction, PermissionResource } from '~shared/entities/permission.entity'
+import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from '@nestjs/common'
+import { Reflector } from '@nestjs/core'
+import { CustomLoggerService } from '~core/logger/logger.service'
+import { HierarchicalRoleService } from '~modules/rbac/hierarchical-role.service'
+import { PermissionAction, PermissionResource } from '~shared/entities/permission.entity'
 
 export const REQUIRE_PERMISSIONS_KEY = 'requirePermissions'
 export const REQUIRE_ROLES_KEY = 'requireRoles'

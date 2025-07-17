@@ -23,17 +23,13 @@ import { Public } from '~core/decorators'
 import { CreateUserDto } from '~shared/dto/create-user.dto'
 import { UpdateUserDto } from '~shared/dto/update-user.dto'
 import { UserResponseDto } from '~shared/dto/user-response.dto'
-import type { UserService } from './user.service'
+import { UserService } from './user.service'
 
 @ApiTags('users')
 @Controller('users')
 @UseInterceptors(ClassSerializerInterceptor)
 export class UserController {
-  private readonly userService: UserService
-
-  constructor(userService: UserService) {
-    this.userService = userService
-  }
+  constructor(private readonly userService: UserService) {}
 
   @Public()
   @Post()

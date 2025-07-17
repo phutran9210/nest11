@@ -1,12 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import * as bcrypt from 'bcrypt'
-import type { Repository } from 'typeorm'
-import type { CustomLoggerService } from '~core/logger/logger.service'
-import type { CreateUserDto } from '~shared/dto/create-user.dto'
-import type { UpdateUserDto } from '~shared/dto/update-user.dto'
+import { Repository } from 'typeorm'
+import { CustomLoggerService } from '~core/logger/logger.service'
+import { CreateUserDto } from '~shared/dto/create-user.dto'
+import { UpdateUserDto } from '~shared/dto/update-user.dto'
 import { UserEntity } from '~shared/entities/user.entity'
-import type { EnvironmentService } from '~shared/services'
+import { EnvironmentService } from '~shared/services'
 
 abstract class BaseService {
   protected readonly logger: CustomLoggerService
@@ -44,18 +44,13 @@ function validateUserExists(user: UserEntity | null, id: string): UserEntity {
 
 @Injectable()
 export class UserService extends BaseService {
-  private readonly userRepository: Repository<UserEntity>
-  private readonly environmentService: EnvironmentService
-
   constructor(
     @InjectRepository(UserEntity)
-    userRepository: Repository<UserEntity>,
+    private readonly userRepository: Repository<UserEntity>,
     logger: CustomLoggerService,
-    environmentService: EnvironmentService,
+    private readonly environmentService: EnvironmentService,
   ) {
     super(logger)
-    this.userRepository = userRepository
-    this.environmentService = environmentService
   }
 
   async create(createUserDto: CreateUserDto): Promise<UserEntity> {

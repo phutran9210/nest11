@@ -11,20 +11,16 @@ import {
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { CurrentUser, RequirePermission, RequireRole } from '~core/decorators/auth'
 import { HierarchicalGuard } from '~core/guards/hierarchical.guard'
-import type { AuthUserDto } from '~shared/dto/auth'
+import { AuthUserDto } from '~shared/dto/auth'
 import { PermissionAction, PermissionResource } from '~shared/entities/permission.entity'
-import type { HierarchicalRoleService } from './hierarchical-role.service'
+import { HierarchicalRoleService } from './hierarchical-role.service'
 
 @ApiTags('RBAC')
 @Controller('rbac')
 @ApiBearerAuth()
 @UseGuards(HierarchicalGuard)
 export class RbacController {
-  private readonly hierarchicalRoleService: HierarchicalRoleService
-
-  constructor(hierarchicalRoleService: HierarchicalRoleService) {
-    this.hierarchicalRoleService = hierarchicalRoleService
-  }
+  constructor(private readonly hierarchicalRoleService: HierarchicalRoleService) {}
 
   @Get('user/:userId/permissions')
   @RequirePermission(PermissionAction.READ, PermissionResource.USER)

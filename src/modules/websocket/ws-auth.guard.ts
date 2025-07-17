@@ -1,16 +1,11 @@
-import {
-  type CanActivate,
-  type ExecutionContext,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common'
-import type { JwtService } from '@nestjs/jwt'
-import type { Socket } from 'socket.io'
-import type { JwtBlacklistService } from '~/core/security'
-import type { JwtPayload } from '~/modules/auth/strategies/jwt.strategy'
-import type { UserService } from '~/modules/user/user.service'
-import type { UserEntity } from '~/shared/entities/user.entity'
-import type { EnvironmentService } from '~/shared/services'
+import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common'
+import { JwtService } from '@nestjs/jwt'
+import { Socket } from 'socket.io'
+import { JwtBlacklistService } from '~/core/security'
+import { JwtPayload } from '~/modules/auth/strategies/jwt.strategy'
+import { UserService } from '~/modules/user/user.service'
+import { UserEntity } from '~/shared/entities/user.entity'
+import { EnvironmentService } from '~/shared/services'
 
 interface AuthenticatedSocket extends Socket {
   user?: UserEntity
@@ -18,22 +13,12 @@ interface AuthenticatedSocket extends Socket {
 
 @Injectable()
 export class WsAuthGuard implements CanActivate {
-  private readonly jwtService: JwtService
-  private readonly userService: UserService
-  private readonly environmentService: EnvironmentService
-  private readonly jwtBlacklistService: JwtBlacklistService
-
   constructor(
-    jwtService: JwtService,
-    userService: UserService,
-    environmentService: EnvironmentService,
-    jwtBlacklistService: JwtBlacklistService,
-  ) {
-    this.jwtService = jwtService
-    this.userService = userService
-    this.environmentService = environmentService
-    this.jwtBlacklistService = jwtBlacklistService
-  }
+    private readonly jwtService: JwtService,
+    private readonly userService: UserService,
+    private readonly environmentService: EnvironmentService,
+    private readonly jwtBlacklistService: JwtBlacklistService,
+  ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const client: AuthenticatedSocket = context.switchToWs().getClient()

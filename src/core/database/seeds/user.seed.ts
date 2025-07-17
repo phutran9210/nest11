@@ -1,5 +1,5 @@
 import * as bcrypt from 'bcrypt'
-import type { DataSource } from 'typeorm'
+import { DataSource } from 'typeorm'
 import { UserEntity } from '~shared/entities/user.entity'
 
 export const runUserSeeder = async (dataSource: DataSource): Promise<void> => {

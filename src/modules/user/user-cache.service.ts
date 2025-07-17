@@ -1,18 +1,15 @@
 import { CACHE_MANAGER } from '@nestjs/cache-manager'
 import { Inject, Injectable } from '@nestjs/common'
-import type { Cache } from 'cache-manager'
-import type { RedisService } from '~core/redis'
-import type { UserEntity } from '~shared/entities/user.entity'
+import { Cache } from 'cache-manager'
+import { RedisService } from '~core/redis'
+import { UserEntity } from '~shared/entities/user.entity'
 
 @Injectable()
 export class UserCacheService {
-  private readonly cacheManager: Cache
-  private readonly redisService: RedisService
-
-  constructor(@Inject(CACHE_MANAGER) cacheManager: Cache, redisService: RedisService) {
-    this.cacheManager = cacheManager
-    this.redisService = redisService
-  }
+  constructor(
+    @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
+    private readonly redisService: RedisService,
+  ) {}
 
   // Using Cache Manager (recommended for basic caching)
   async getUserFromCache(userId: string): Promise<UserEntity | null> {

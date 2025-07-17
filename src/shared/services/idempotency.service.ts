@@ -11,14 +11,10 @@ export interface IdempotencyResult<T = Record<string, unknown>> {
 
 @Injectable()
 export class IdempotencyService {
-  private readonly idempotencyRepository: Repository<IdempotencyKeyEntity>
-
   constructor(
     @InjectRepository(IdempotencyKeyEntity)
-    idempotencyRepository: Repository<IdempotencyKeyEntity>,
-  ) {
-    this.idempotencyRepository = idempotencyRepository
-  }
+    private readonly idempotencyRepository: Repository<IdempotencyKeyEntity>,
+  ) {}
 
   async checkOrCreateIdempotencyKey<T = Record<string, unknown>>(
     key: string,

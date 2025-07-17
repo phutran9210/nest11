@@ -1,6 +1,6 @@
-import { Injectable, Logger, type OnModuleDestroy } from '@nestjs/common'
+import { Injectable, Logger, OnModuleDestroy } from '@nestjs/common'
 import { InjectDataSource } from '@nestjs/typeorm'
-import type { DataSource } from 'typeorm'
+import { DataSource } from 'typeorm'
 
 @Injectable()
 export class DatabaseService implements OnModuleDestroy {

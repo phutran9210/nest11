@@ -1,5 +1,5 @@
-import { Injectable, type LoggerService, type OnModuleDestroy } from '@nestjs/common'
-import type * as winston from 'winston'
+import { Injectable, LoggerService, OnModuleDestroy } from '@nestjs/common'
+import * as winston from 'winston'
 
 @Injectable()
 export class CustomLoggerService implements LoggerService, OnModuleDestroy {

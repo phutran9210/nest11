@@ -1,47 +1,29 @@
 import { randomUUID } from 'node:crypto'
 import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common'
-import type { JwtService } from '@nestjs/jwt'
+import { JwtService } from '@nestjs/jwt'
 import * as bcrypt from 'bcrypt'
-import type { CustomLoggerService } from '~core/logger/logger.service'
-import type { JwtBlacklistService, RateLimitService } from '~core/security'
-import type { UserService } from '~modules/user/user.service'
+import { CustomLoggerService } from '~core/logger/logger.service'
+import { JwtBlacklistService, RateLimitService } from '~core/security'
+import { UserService } from '~modules/user/user.service'
 // import { RedisLockService } from '~core/redis/services';
-import type { AuthResponseDto, LoginDto, RefreshTokenDto, RegisterDto } from '~shared/dto/auth'
+import { AuthResponseDto, LoginDto, RefreshTokenDto, RegisterDto } from '~shared/dto/auth'
 import { IdempotencyStatus } from '~shared/entities/idempotency-key.entity'
-import type { UserEntity } from '~shared/entities/user.entity'
-import type { EnvironmentService, IdempotencyService } from '~shared/services'
-import type { JwtPayload } from './strategies/jwt.strategy'
+import { UserEntity } from '~shared/entities/user.entity'
+import { EnvironmentService, IdempotencyService } from '~shared/services'
+import { JwtPayload } from './strategies/jwt.strategy'
 
 @Injectable()
 export class AuthService {
-  private readonly logger: CustomLoggerService
-  private readonly userService: UserService
-  private readonly jwtService: JwtService
-  private readonly environmentService: EnvironmentService
-  private readonly rateLimitService: RateLimitService
-  private readonly idempotencyService: IdempotencyService
-  private readonly jwtBlacklistService: JwtBlacklistService
-  // private readonly redisLockService: RedisLockService;
-
   constructor(
-    userService: UserService,
-    jwtService: JwtService,
-    logger: CustomLoggerService,
-    environmentService: EnvironmentService,
-    rateLimitService: RateLimitService,
-    idempotencyService: IdempotencyService,
-    jwtBlacklistService: JwtBlacklistService,
-    // redisLockService: RedisLockService,
-  ) {
-    this.userService = userService
-    this.jwtService = jwtService
-    this.logger = logger
-    this.environmentService = environmentService
-    this.rateLimitService = rateLimitService
-    this.idempotencyService = idempotencyService
-    this.jwtBlacklistService = jwtBlacklistService
-    // this.redisLockService = redisLockService;
-  }
+    private readonly logger: CustomLoggerService,
+    private readonly userService: UserService,
+    private readonly jwtService: JwtService,
+    private readonly environmentService: EnvironmentService,
+    private readonly rateLimitService: RateLimitService,
+    private readonly idempotencyService: IdempotencyService,
+    private readonly jwtBlacklistService: JwtBlacklistService,
+    // private readonly redisLockService: RedisLockService;
+  ) {}
 
   async register(registerDto: RegisterDto): Promise<AuthResponseDto> {
     this.logger.logBusiness('register_attempt', 'auth', undefined, { email: registerDto.email })

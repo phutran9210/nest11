@@ -1,16 +1,13 @@
 import { Injectable } from '@nestjs/common'
-import type { CustomLoggerService } from '~core/logger/logger.service'
-import type { RedisStringService } from '~core/redis/services'
+import { CustomLoggerService } from '~core/logger/logger.service'
+import { RedisStringService } from '~core/redis/services'
 
 @Injectable()
 export class JwtBlacklistService {
-  private readonly redisService: RedisStringService
-  private readonly logger: CustomLoggerService
-
-  constructor(redisService: RedisStringService, logger: CustomLoggerService) {
-    this.redisService = redisService
-    this.logger = logger
-  }
+  constructor(
+    private readonly redisService: RedisStringService,
+    private readonly logger: CustomLoggerService,
+  ) {}
 
   async blacklistToken(jti: string, expiresIn: number): Promise<void> {
     const key = this.getBlacklistKey(jti)

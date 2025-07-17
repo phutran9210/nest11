@@ -1,5 +1,5 @@
-import type { INestApplication } from '@nestjs/common'
-import { DocumentBuilder, type OpenAPIObject, SwaggerModule } from '@nestjs/swagger'
+import { INestApplication } from '@nestjs/common'
+import { DocumentBuilder, OpenAPIObject, SwaggerModule } from '@nestjs/swagger'
 
 export const createSwaggerConfig = (): Omit<OpenAPIObject, 'paths'> => {
   return new DocumentBuilder()

@@ -1,4 +1,4 @@
-import type { MigrationInterface, QueryRunner } from 'typeorm'
+import { MigrationInterface, QueryRunner } from 'typeorm'
 
 export class CreateRolePermissionTables1750320756926 implements MigrationInterface {
   name = 'CreateRolePermissionTables1750320756926'

@@ -1,4 +1,4 @@
-import type { MigrationInterface, QueryRunner } from 'typeorm'
+import { MigrationInterface, QueryRunner } from 'typeorm'
 
 export class CreateIdempotencyKeyTable1749710470233 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {

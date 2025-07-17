@@ -1,6 +1,6 @@
 import { Controller, Get } from '@nestjs/common'
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
-import type { AppService, IHealthCheckResponse } from '~/app.service'
+import { AppService, IHealthCheckResponse } from '~/app.service'
 import { Public } from '~core/decorators'
 
 @Controller('status')

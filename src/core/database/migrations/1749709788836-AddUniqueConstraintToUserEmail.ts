@@ -1,4 +1,4 @@
-import type { MigrationInterface, QueryRunner } from 'typeorm'
+import { MigrationInterface, QueryRunner } from 'typeorm'
 
 export class AddUniqueConstraintToUserEmail1749709788836 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {

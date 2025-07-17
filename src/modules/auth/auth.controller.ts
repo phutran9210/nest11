@@ -1,18 +1,14 @@
 import { Body, Controller, Headers, HttpCode, HttpStatus, Post } from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { ApiCreateOperation, ClientIp, CurrentUser, Public } from '~core/decorators'
-import { AuthResponseDto, type LoginDto, type RefreshTokenDto, RegisterDto } from '~shared/dto/auth'
-import type { UserEntity } from '~shared/entities/user.entity'
-import type { AuthService } from './auth.service'
+import { AuthResponseDto, LoginDto, RefreshTokenDto, RegisterDto } from '~shared/dto/auth'
+import { UserEntity } from '~shared/entities/user.entity'
+import { AuthService } from './auth.service'
 
 @ApiTags('Authentication')
 @Controller('auth')
 export class AuthController {
-  private readonly authService: AuthService
-
-  constructor(authService: AuthService) {
-    this.authService = authService
-  }
+  constructor(private readonly authService: AuthService) {}
 
   @Public()
   @Post('register')

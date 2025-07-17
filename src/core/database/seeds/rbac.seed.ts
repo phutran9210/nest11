@@ -1,11 +1,11 @@
-import type { DataSource } from 'typeorm'
+import { DataSource } from 'typeorm'
 import {
   PermissionAction,
   PermissionEntity,
   PermissionResource,
-} from '../../../shared/entities/permission.entity'
-import { RoleEntity } from '../../../shared/entities/role.entity'
-import { RoleHierarchyEntity } from '../../../shared/entities/role-hierarchy.entity'
+} from '~shared/entities/permission.entity'
+import { RoleEntity } from '~shared/entities/role.entity'
+import { RoleHierarchyEntity } from '~shared/entities/role-hierarchy.entity'
 
 export async function seedRbacData(dataSource: DataSource): Promise<void> {
   console.log('🌱 Seeding RBAC data...')

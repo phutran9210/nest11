@@ -8,7 +8,7 @@ import {
   IsString,
   IsStrongPassword,
   MinLength,
-  type ValidationOptions,
+  ValidationOptions,
 } from 'class-validator'
 import { MESSAGES } from '../constant'
 

@@ -1,7 +1,7 @@
 import { ConfigService } from '@nestjs/config'
 import { config } from 'dotenv'
-import { DataSource, type DataSourceOptions } from 'typeorm'
-import { getDatabaseConfig } from '../../config/database.config'
+import { DataSource, DataSourceOptions } from 'typeorm'
+import { getDatabaseConfig } from '~core/config'
 import { seedRbacData } from './rbac.seed'
 import { runUserSeeder } from './user.seed'
 

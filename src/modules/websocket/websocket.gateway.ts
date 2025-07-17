@@ -3,15 +3,15 @@ import { Cron, CronExpression } from '@nestjs/schedule'
 import {
   ConnectedSocket,
   MessageBody,
-  type OnGatewayConnection,
-  type OnGatewayDisconnect,
-  type OnGatewayInit,
+  OnGatewayConnection,
+  OnGatewayDisconnect,
+  OnGatewayInit,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets'
-import type { Server, Socket } from 'socket.io'
-import type { UserEntity } from '~/shared/entities/user.entity'
+import { Server, Socket } from 'socket.io'
+import { UserEntity } from '~/shared/entities/user.entity'
 import { WsAuthGuard } from './ws-auth.guard'
 
 interface AuthenticatedSocket extends Socket {

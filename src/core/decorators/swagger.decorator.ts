@@ -1,4 +1,4 @@
-import { applyDecorators, type Type } from '@nestjs/common'
+import { applyDecorators, Type } from '@nestjs/common'
 import {
   ApiBadRequestResponse,
   ApiBody,

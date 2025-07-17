@@ -1,5 +1,5 @@
-import { createParamDecorator, type ExecutionContext } from '@nestjs/common'
-import type { UserEntity } from '~shared/entities/user.entity'
+import { createParamDecorator, ExecutionContext } from '@nestjs/common'
+import { UserEntity } from '~shared/entities/user.entity'
 
 interface AuthenticatedRequest {
   user: UserEntity

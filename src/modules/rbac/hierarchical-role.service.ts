@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { In, type Repository } from 'typeorm'
-import type { CustomLoggerService } from '~core/logger/logger.service'
+import { CustomLoggerService } from '~core/logger/logger.service'
 import {
   PermissionAction,
   PermissionEntity,
@@ -20,29 +20,17 @@ export interface UserPermissions {
 
 @Injectable()
 export class HierarchicalRoleService {
-  private readonly roleRepository: Repository<RoleEntity>
-  private readonly permissionRepository: Repository<PermissionEntity>
-  private readonly roleHierarchyRepository: Repository<RoleHierarchyEntity>
-  private readonly userRepository: Repository<UserEntity>
-  private readonly logger: CustomLoggerService
-
   constructor(
     @InjectRepository(RoleEntity)
-    roleRepository: Repository<RoleEntity>,
+    private readonly roleRepository: Repository<RoleEntity>,
     @InjectRepository(PermissionEntity)
-    permissionRepository: Repository<PermissionEntity>,
+    private readonly permissionRepository: Repository<PermissionEntity>,
     @InjectRepository(RoleHierarchyEntity)
-    roleHierarchyRepository: Repository<RoleHierarchyEntity>,
+    private readonly roleHierarchyRepository: Repository<RoleHierarchyEntity>,
     @InjectRepository(UserEntity)
-    userRepository: Repository<UserEntity>,
-    logger: CustomLoggerService,
-  ) {
-    this.roleRepository = roleRepository
-    this.permissionRepository = permissionRepository
-    this.roleHierarchyRepository = roleHierarchyRepository
-    this.userRepository = userRepository
-    this.logger = logger
-  }
+    private readonly userRepository: Repository<UserEntity>,
+    private readonly logger: CustomLoggerService,
+  ) {}
 
   async getUserPermissions(userId: string): Promise<UserPermissions> {
     const user = await this.userRepository.findOne({

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
-import type { ISendMailOptions, MailerService as NestMailerService } from '@nestjs-modules/mailer'
-import type { Attachment } from 'nodemailer/lib/mailer'
+import { ISendMailOptions, MailerService as NestMailerService } from '@nestjs-modules/mailer'
+import { Attachment } from 'nodemailer/lib/mailer'
 
 export interface SendMailOptions {
   to: string | string[]
@@ -14,10 +14,7 @@ export interface SendMailOptions {
 
 @Injectable()
 export class MailerService {
-  private readonly mailerService: NestMailerService
-  constructor(mailerService: NestMailerService) {
-    this.mailerService = mailerService
-  }
+  constructor(private readonly mailerService: NestMailerService) {}
 
   async sendMail(options: SendMailOptions): Promise<void> {
     const mailOptions: ISendMailOptions = {
